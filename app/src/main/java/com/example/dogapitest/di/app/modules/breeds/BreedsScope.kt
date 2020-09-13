@@ -1,4 +1,4 @@
-package com.example.dogapitest.di.breeds
+package com.example.dogapitest.di.app.modules.breeds
 
 import javax.inject.Scope
 

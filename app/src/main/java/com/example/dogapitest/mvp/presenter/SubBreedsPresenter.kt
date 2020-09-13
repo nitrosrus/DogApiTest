@@ -10,40 +10,22 @@ import io.reactivex.rxjava3.core.Scheduler
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
-import ru.terrakok.cicerone.Screen
+import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: List<String>) :
-    MvpPresenter<BreedsView>(), IBreedsListPresener {
+class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: ArrayList<String>, ) : MvpPresenter<BreedsView>() {
 
-    override var itemClickListener: ((BreedsItemView) -> Unit)? = null
-    override fun getCount() = subBreeds.size
-    override fun bindView(view: BreedsItemView) {
-        val breed = subBreeds[view.pos]
-        view.setBreed(breed)
+
+    inner class SubBreedsListPresenter : IBreedsListPresener {
+        val breeds = mutableListOf<String>()
+        override var itemClickListener: ((BreedsItemView) -> Unit)? = null
+        override fun getCount() = breeds.size
+        override fun bindView(view: BreedsItemView) {
+            val breed = breeds[view.pos]
+            view.setBreed(breed)
+        }
     }
-
-
-//    fun listBreeds(view: BreedsItemView) {
-//        view.setBreed(breeds.keys.elementAt(view.pos))
-//        if (breeds.values.size > 0) view.setCountBreed(breeds.values.elementAt(view.pos).size.toString())
-//    }
-//
-//    fun listSubBreads(view: BreedsItemView, name: String) {
-//        breeds.values.elementAt(view.pos).forEach { tut -> view.setBreed(tut) }
-//
-//    }
-//
-//    fun clickNameBreeds(view: BreedsItemView) {
-//        if (breeds[view.getBreads()] != null) {
-//            breeds[view.getBreads()]?.forEach { subbred ->
-//                view.setBreed(subbred)
-//                println(subbred)
-//            }
-//        }
-//    }
-//}
 
     @Inject
     lateinit var router: Router
@@ -51,36 +33,37 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: List
     @Inject
     lateinit var apiBreeds: DogApiBreeds
 
+    val subBreedsListPresenter = SubBreedsListPresenter()
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+
         viewState.init()
-
-        itemClickListener = { view ->
-            println("excelent")
-            // val breed=breedsListPresenter.clickNameBreeds(view)
-//            println(view.getBreads())
-//            router.replaceScreen(Screens.SubBreadsScreen())
-
-
+        loadData()
+       subBreedsListPresenter.itemClickListener = { view ->
+           router.replaceScreen(Screens.ImageScreen(subBreeds.apply {
+               add(view.getBreads())
+           }))
         }
     }
 
 
-//fun loadData() {
-//
-//    apiBreeds.getBreeds().observeOn(mainThreadScheduler).subscribe({ breeds ->
-//        breedsListPresenter.breeds.clear()
-//        breedsListPresenter.breeds.putAll(breeds.message)
-//        viewState.updateList()
-//    }, {
-//        println("qwerty " + it)
-//    })
-//
-//}
+    fun loadData() {
+
+        apiBreeds.getSubBreeds(subBreeds[0]).observeOn(mainThreadScheduler).subscribe({ breedList ->
+            subBreedsListPresenter.breeds.clear()
+            subBreedsListPresenter.breeds.addAll(breedList.message)
+            viewState.updateList()
+        }, {
+            Timber.e(it)
+        })
+
+
+    }
 
 
     fun backClicked(): Boolean {
-        router.navigateTo(Screens.BreedsScreen())
+        router.exit()
         return true
     }
 

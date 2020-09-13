@@ -1,7 +1,6 @@
 package com.example.dogapitest.mvp.model.repo
 
 import com.example.dogapitest.mvp.model.api.IDataSource
-import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.model.network.NetworkStatus
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -21,5 +20,5 @@ class DogApiBreeds(
 //    }.subscribeOn(Schedulers.io())
 
     fun getBreeds() = api.getBreeds().subscribeOn(Schedulers.io())
-    fun getSubBreeds(breed:String)=api.getSubBreeds(breed).subscribeOn(Schedulers.io())
+    fun getSubBreeds(breed: String) = api.getSubBreeds(breed).subscribeOn(Schedulers.io())
 }

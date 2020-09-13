@@ -3,12 +3,10 @@ package com.example.dogapitest.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogapitest.R
 import com.example.dogapitest.mvp.presenter.list.IBreedsListPresener
 import com.example.dogapitest.mvp.view.list.BreedsItemView
-import com.jakewharton.rxbinding3.view.visibility
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_breeds.view.*
 
@@ -42,11 +40,9 @@ class SubBreedsRVAdapter(val presenter: IBreedsListPresener) :
         }
 
 
-        override fun getBreads() = with(containerView) {
-            return@with tv_breeds.text
+        override fun getBreads(): String = with(containerView) {
+            return tv_breeds.text as String
         }
-
-
 
 
     }

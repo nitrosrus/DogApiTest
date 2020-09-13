@@ -40,8 +40,8 @@ class BreedsRVAdapter(val presenter: IBreedsListPresener) :
             tv_count_breeds.text = text
         }
 
-        override fun getBreads() = with(containerView) {
-            return@with tv_breeds.text
+        override fun getBreads(): String = with(containerView) {
+            return tv_breeds.text as String
         }
 
 

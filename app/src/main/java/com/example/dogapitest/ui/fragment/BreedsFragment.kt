@@ -46,6 +46,7 @@ class BreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener {
 
     override fun backClicked() = presenter.backClicked()
 
+
     override fun init() {
         rv_breeds.layoutManager = LinearLayoutManager(context)
         adapter = BreedsRVAdapter(presenter.breedsListPresenter).apply {

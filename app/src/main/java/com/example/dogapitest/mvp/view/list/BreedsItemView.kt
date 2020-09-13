@@ -4,7 +4,7 @@ interface BreedsItemView {
     var pos: Int
     fun setBreed(text: String)
     fun setCountBreed(text: String)
-    fun getBreads(): CharSequence?
+    fun getBreads(): String
 
 
 }

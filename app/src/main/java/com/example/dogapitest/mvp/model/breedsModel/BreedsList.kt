@@ -6,8 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 
-data class Example(
-
+data class BreedsList(
 	@Expose val message: Map<String,List<String>>,
 	@Expose val status: String
 ) : Parcelable

@@ -4,11 +4,10 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import java.lang.StringBuilder
-
 
 @Parcelize
-data class BreedsImage(
-    @Expose val message: List<String>,//url image
+data class SubBreedsList(
+    @Expose
+    val message: List<String>, //subbreedlist
     @Expose val status: String
 ) : Parcelable
