@@ -32,15 +32,16 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
     override fun getItemCount() = presenter.getCount()
 
 
-    inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+    inner class ViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView),
         LayoutContainer, ImageItemView {
         override var pos = -1
-        override fun setlike(text: String)= with(containerView) {
+        override fun setlike(text: String) = with(containerView) {
 
         }
 
-        override fun loadImage(url: String)= with(containerView) {
-            imageLoader.loadInto(url,iv_imageBreed)
+        override fun loadImage(breed: String, url: String) = with(containerView) {
+            imageLoader.loadInto(breed, url, iv_imageBreed)
         }
 
 

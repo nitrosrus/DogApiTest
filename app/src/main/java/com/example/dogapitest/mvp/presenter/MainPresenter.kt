@@ -20,7 +20,20 @@ class MainPresenter() : MvpPresenter<MainView>() {
         router.replaceScreen(Screens.BreedsScreen())
 
     }
-    fun backClicked(){
+
+    fun backClicked() {
         router.exit()
     }
+
+
+    fun btnList() {
+
+        router.navigateTo(Screens.BreedsScreen())
+    }
+
+    fun btnFavorites() {
+        viewState.hideBottomNavigation()
+    }
+
+
 }

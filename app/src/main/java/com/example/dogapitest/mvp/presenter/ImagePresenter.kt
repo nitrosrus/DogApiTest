@@ -23,7 +23,7 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
         override fun getCount() = image.size
         override fun bindView(view: ImageItemView) {
             val url = image[view.pos]
-            view.loadImage(url)
+            view.loadImage("testname",url)
         }
 
         override fun likeImage() {

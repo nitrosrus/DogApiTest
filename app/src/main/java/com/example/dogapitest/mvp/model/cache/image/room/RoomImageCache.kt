@@ -7,7 +7,6 @@ import com.example.dogapitest.mvp.model.entity.room.db.RoomCachedImage
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.internal.operators.completable.CompletableCreate
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream

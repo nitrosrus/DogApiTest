@@ -11,9 +11,7 @@ class ImageApiBreeds(
     val api: IDataSource,
     val networkStatus: NetworkStatus
 ) {
-    fun gettest(): Single<ImageBreedsList> {
-        return api.gettest().subscribeOn(Schedulers.io())
-    }
+    fun getlikeimage(){}
 
     fun getImage(breeds: String): Single<ImageBreedsList> {
         return api.getBreedsImage(breeds).subscribeOn(Schedulers.io())

@@ -8,6 +8,6 @@ interface IImageCache {
 
     fun contains(url: String): Single<Boolean>
     fun getBytes(url: String): Maybe<ByteArray?>
-    fun saveImage(url: String, bytes: ByteArray): Completable
+    fun saveImage(breed:String,url: String, bytes: ByteArray): Completable
     fun clear(): Completable
 }
