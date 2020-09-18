@@ -1,11 +1,13 @@
 package com.example.dogapitest.mvp.presenter
 
-import com.example.dogapitest.mvp.model.repo.DogApiBreeds
+import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.model.repo.ImageApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
 import com.example.dogapitest.mvp.view.list.ImageItemView
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.schedulers.Schedulers
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -23,12 +25,14 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
         override fun getCount() = image.size
         override fun bindView(view: ImageItemView) {
             val url = image[view.pos]
-            view.loadImage("testname",url)
+            view.loadImage(url)
         }
 
-        override fun likeImage() {
+        override fun likeBTN(pos: Int) {
+            setLike(pos)
 
         }
+
     }
 
     @Inject
@@ -37,6 +41,8 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
     @Inject
     lateinit var imageApi: ImageApiBreeds
 
+    @Inject
+    lateinit var database: IBreedsCache
 
     val imageListPresenter = ImageListPresenter()
 
@@ -44,6 +50,13 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
         super.onFirstViewAttach()
         viewState.init()
         loadData()
+    }
+
+    fun setLike(pos: Int) {
+        database.putLikeImage(listByImage[0], imageListPresenter.image[pos]).observeOn(AndroidSchedulers.mainThread()).subscribe()
+        //imageApi.cache.putLikeImage(listByImage[0], imageListPresenter.image[pos]).observeOn(mainThreadScheduler)
+        //imageApi.setLikeImage(listByImage[0], imageListPresenter.image[pos])
+        println(listByImage[0] + imageListPresenter.image[pos])
     }
 
 
@@ -65,23 +78,11 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
                     imageListPresenter.image.addAll(list.message)
                     println(list.message)
                     viewState.updateList()
+                    listByImage[0] = listByImage[1]
                 }, {
                     Timber.e(it)
                 })
-
         }
-
-
-//        imageApi.gettest().observeOn(mainThreadScheduler)
-//            .subscribe({ list ->
-//                imageListPresenter.image.clear()
-//                imageListPresenter.image.addAll(list.message)
-//                println(list.message)
-//                viewState.updateList()
-//            }, {
-//                Timber.e(it)
-//            })
-
 
     }
 

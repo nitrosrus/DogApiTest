@@ -1,49 +1,60 @@
 package com.example.dogapitest.mvp.model.entity.room.dao
 
+
 import androidx.room.*
 
+import com.example.dogapitest.mvp.model.entity.room.db.RoomCacheLike
 import com.example.dogapitest.mvp.model.entity.room.db.RoomCachedBreeds
+
+
 
 @Dao
 interface BreedsDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(breed: RoomCachedBreeds)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg breed: RoomCachedBreeds)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(breed: List<RoomCachedBreeds>)
-
-    @Update
-    fun update(breed: RoomCachedBreeds)
-
-    @Update
-    fun update(vararg breed: RoomCachedBreeds)
-
-    @Update
-    fun update(breed: List<RoomCachedBreeds>)
+    fun insert(breeds: RoomCachedBreeds)
 
     @Delete
-    fun delete(breed: RoomCachedBreeds)
+    fun delete(breeds: RoomCachedBreeds)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun Update(breeds: RoomCachedBreeds)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(url: RoomCacheLike)
 
     @Delete
-    fun delete(vararg breed: RoomCachedBreeds)
+    fun delete(url: RoomCacheLike)
 
-    @Delete
-    fun delete(breed: List<RoomCachedBreeds>)
-
-    @Query("DELETE FROM RoomCachedBreeds")
-    fun clear()
-
-    @Query("SELECT * FROM RoomCachedBreeds")
-    fun getAll(): List<RoomCachedBreeds>
-
-    @Query("SELECT * FROM RoomCachedBreeds WHERE breeds = :breeds LIMIT 1")
-    fun FindByBreeds(breeds: String): RoomCachedBreeds
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun Update(url: RoomCacheLike)
 
 
+
+
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(breeds: RoomCachedBreeds,url: RoomCacheLike)
+
+
+
+
+    @Query("INSERT INTO RoomCachedBreeds (breed) VALUES (:breeds)")
+    fun insertbreed(breeds: String)
+
+    @Query("INSERT INTO RoomCacheLike (url) VALUES (:url)")
+    fun inserturl(url: String)
+
+
+    @Query("SELECT * FROM RoomCacheLike")
+    fun getAllImage(): List<RoomCacheLike>
+
+
+//    @Query("SELECT * FROM RoomCachedBreeds")
+//    fun getLikeImages(): LiveData<List<RoomBreedsLikeFull>>
+//
+//    @Query("SELECT * FROM RoomCachedBreeds")
+//    fun getAllDb(): List<RoomBreedsLikeFull>
 
 
 }

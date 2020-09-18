@@ -15,6 +15,7 @@ import com.example.dogapitest.mvp.view.BreedsImageView
 import com.example.dogapitest.ui.adapter.ImageRVAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.image_fragment.*
+import kotlinx.android.synthetic.main.item_image.*
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -80,7 +81,7 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
     }
 
     override fun setLikeStasus() {
-
+        btn_like.setImageResource(R.drawable.ic_heart_font)
     }
 
     override fun loadImage(url: String) {

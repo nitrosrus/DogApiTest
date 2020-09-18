@@ -7,7 +7,5 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SubBreedsList(
-    @Expose
-    val message: List<String>, //subbreedlist
-    @Expose val status: String
+    @Expose val message: List<String>, //subbreedlist
 ) : Parcelable

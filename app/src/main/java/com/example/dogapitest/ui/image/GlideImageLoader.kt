@@ -18,7 +18,7 @@ class GlideImageLoader(override val cache: IImageCache, val networkStatus: Netwo
     IImageLoader<ImageView> {
 
 
-    override fun loadInto(breed:String,url: String, container: ImageView) {
+    override fun loadInto(url: String, container: ImageView) {
         Timber.d("Loading Image $url ")
         networkStatus.isOnlineSingle().observeOn(AndroidSchedulers.mainThread())
             .subscribe { isOnLine ->
@@ -45,7 +45,7 @@ class GlideImageLoader(override val cache: IImageCache, val networkStatus: Netwo
                                 val stream = ByteArrayOutputStream()
                                 resource?.compress(compressFormat, 100, stream)
                                 val bytes = stream.use { it.toByteArray() }
-                                cache.saveImage(breed, url, bytes).blockingAwait()
+                                cache.saveImage(url, bytes).blockingAwait()
                                 return false
                             }
                         }).into(container)

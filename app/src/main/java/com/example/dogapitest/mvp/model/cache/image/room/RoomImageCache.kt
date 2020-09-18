@@ -29,7 +29,7 @@ class RoomImageCache(val database: Database, val dir: File) : IImageCache {
         }
     }.subscribeOn(Schedulers.io())
 
-    override fun saveImage(breed:String,url: String, bytes: ByteArray) = Completable.create { emitter ->
+    override fun saveImage(url: String, bytes: ByteArray) = Completable.create { emitter ->
         if (!dir.exists() && !dir.mkdir()) {
             emitter.onError(IOException("Failed to create cache dir"))
             return@create
@@ -43,7 +43,7 @@ class RoomImageCache(val database: Database, val dir: File) : IImageCache {
         } catch (e: Exception) {
             emitter.onError(e)
         }
-        database.imageDao.insert(RoomCachedImage(breed ,url, imageFile.path,))
+        database.imageDao.insert(RoomCachedImage(url,imageFile.path))
         emitter.onComplete()
 
     }.subscribeOn(Schedulers.io())

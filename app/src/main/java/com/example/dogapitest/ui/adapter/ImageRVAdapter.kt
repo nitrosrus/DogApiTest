@@ -26,6 +26,7 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.pos = position
         holder.containerView.setOnClickListener { presenter.itemClickListener?.invoke(holder) }
+        holder.containerView.btn_like.setOnClickListener { presenter.likeBTN(position) }
         presenter.bindView(holder)
     }
 
@@ -40,8 +41,8 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
 
         }
 
-        override fun loadImage(breed: String, url: String) = with(containerView) {
-            imageLoader.loadInto(breed, url, iv_imageBreed)
+        override fun loadImage(url: String) = with(containerView) {
+            imageLoader.loadInto(url, iv_imageBreed)
         }
 
 

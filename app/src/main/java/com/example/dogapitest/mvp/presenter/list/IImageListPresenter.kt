@@ -6,5 +6,6 @@ interface IImageListPresenter {
     var itemClickListener: ((ImageItemView) -> Unit)?
     fun getCount(): Int
     fun bindView(view: ImageItemView)
-    fun likeImage()
+    fun likeBTN(position: Int)
+
 }
