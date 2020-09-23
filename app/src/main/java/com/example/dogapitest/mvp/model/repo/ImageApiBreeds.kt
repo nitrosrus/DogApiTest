@@ -28,13 +28,7 @@ class ImageApiBreeds(
     }
 
 
-    fun getLikeImage(breed: String):Single<List<String>> {
-       return cache.getLikeImages(breed).subscribeOn(Schedulers.io())
-    }
 
-    fun setLikeImage(breed: String, url: String) {
-        cache.putLikeImage(breed, url).observeOn(AndroidSchedulers.mainThread())
-    }
 
 
 }

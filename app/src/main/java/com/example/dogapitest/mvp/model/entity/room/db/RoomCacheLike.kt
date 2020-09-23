@@ -4,17 +4,13 @@ import androidx.annotation.NonNull
 import androidx.room.*
 
 
-@Entity(
-    foreignKeys =
-        [ForeignKey(
-            entity = RoomCachedBreeds::class,
-            parentColumns = ["breed"],
-            childColumns = ["breedName"]
-        )]
-    )
+@Entity
 
-class RoomCacheLike(
+
+data class RoomCacheLike(
 
     val breedName: String,
-   @PrimaryKey val url: String
+    @PrimaryKey val url: String
+
 )
+

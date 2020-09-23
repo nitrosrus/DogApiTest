@@ -11,6 +11,7 @@ import javax.inject.Inject
 @InjectViewState
 class MainPresenter() : MvpPresenter<MainView>() {
 
+
     @Inject
     lateinit var router: Router
 
@@ -32,7 +33,8 @@ class MainPresenter() : MvpPresenter<MainView>() {
     }
 
     fun btnFavorites() {
-        viewState.hideBottomNavigation()
+        router.navigateTo(Screens.LikeBreedsScreen())
+
     }
 
 

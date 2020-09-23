@@ -1,6 +1,9 @@
 package com.example.dogapitest.di.app.modules.breeds
 
 import com.example.dogapitest.mvp.model.api.IDataSource
+import com.example.dogapitest.mvp.model.cache.IBreedsCache
+import com.example.dogapitest.mvp.model.cache.room.RoomBreedsCache
+import com.example.dogapitest.mvp.model.entity.room.db.Database
 import com.example.dogapitest.mvp.model.network.NetworkStatus
 import com.example.dogapitest.mvp.model.repo.DogApiBreeds
 import dagger.Module
@@ -13,6 +16,11 @@ open class BreedsModule {
     @Provides
     open fun breedsRepo(api: IDataSource, networkStatus: NetworkStatus): DogApiBreeds {
         return DogApiBreeds(api, networkStatus)
+    }
+    @BreedsScope
+    @Provides
+    fun breedsCache(database: Database): IBreedsCache {
+        return RoomBreedsCache(database)
     }
 
 }

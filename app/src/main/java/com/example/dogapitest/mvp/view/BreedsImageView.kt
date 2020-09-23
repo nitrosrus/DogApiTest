@@ -8,7 +8,5 @@ import moxy.viewstate.strategy.StateStrategyType
 interface BreedsImageView : MvpView {
     fun init()
     fun updateList()
-
-    fun setLikeStasus()
     fun loadImage(url: String)
 }

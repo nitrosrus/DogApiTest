@@ -1,9 +1,7 @@
 package com.example.dogapitest.navigation
 
 
-import com.example.dogapitest.ui.fragment.BreedsFragment
-import com.example.dogapitest.ui.fragment.ImageFragment
-import com.example.dogapitest.ui.fragment.SubBreedsFragment
+import com.example.dogapitest.ui.fragment.*
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class Screens {
@@ -21,4 +19,10 @@ class Screens {
         override fun getFragment() = ImageFragment.newInstance(list)
     }
 
+    class LikeBreedsScreen() : SupportAppScreen() {
+        override fun getFragment() = LikeBreedsFragment.newInstance()
+    }
+    class LikeImageScreen(val breedName: String) : SupportAppScreen() {
+        override fun getFragment() = LikeImageFragment.newInstance(breedName)
+    }
 }

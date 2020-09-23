@@ -26,7 +26,7 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.pos = position
         holder.containerView.setOnClickListener { presenter.itemClickListener?.invoke(holder) }
-        holder.containerView.btn_like.setOnClickListener { presenter.likeBTN(position) }
+        holder.containerView.btn_like.setOnClickListener { presenter.likeBTN(holder) }
         presenter.bindView(holder)
     }
 
@@ -37,8 +37,12 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
         RecyclerView.ViewHolder(containerView),
         LayoutContainer, ImageItemView {
         override var pos = -1
-        override fun setlike(text: String) = with(containerView) {
-
+        override fun setlike(boolean: Boolean) = with(containerView) {
+            if (boolean){
+                btn_like.setImageResource(R.drawable.ic_heart_font)
+            }else{
+                btn_like.setImageResource(R.drawable.ic_heart)
+            }
         }
 
         override fun loadImage(url: String) = with(containerView) {

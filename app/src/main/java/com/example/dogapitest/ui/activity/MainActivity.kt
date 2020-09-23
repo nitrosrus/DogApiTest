@@ -12,6 +12,7 @@ import com.example.dogapitest.mvp.view.MainView
 import com.jakewharton.rxbinding3.view.visibility
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_action_bar.*
+import kotlinx.android.synthetic.main.item_breeds.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -43,18 +44,13 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         actionbar.elevation
 
 
-
     }
 
 
-
-    override fun hideBottomNavigation() {
-        invisible()
-    }
 
     fun invisible() {
-        if (iv_action_back.visibility == 0) iv_action_back.visibility =
-            View.INVISIBLE else iv_action_back.visibility = View.VISIBLE
+//        if (iv_action_back.visibility == 0) iv_action_back.visibility =
+//            View.INVISIBLE else iv_action_back.visibility = View.VISIBLE
     }
 
 
@@ -63,7 +59,14 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         App.instance.appComponent.inject(this)
     }
 
+
     override fun init() {
+        tv_action_back.visibility = View.INVISIBLE
+        iv_action_back.visibility = View.INVISIBLE
+        iv_action_share.visibility = View.INVISIBLE
+        tv_action_title.text = "Breeds" //знаю что хардкод)
+
+
     }
 
 

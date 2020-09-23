@@ -3,7 +3,6 @@ package com.example.dogapitest.mvp.presenter
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.model.repo.ImageApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
 import com.example.dogapitest.mvp.view.list.ImageItemView
@@ -16,14 +15,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayList<String>) :
+class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: String) :
     MvpPresenter<BreedsImageView>() {
 
     @Inject
     lateinit var router: Router
-
-    @Inject
-    lateinit var imageApi: ImageApiBreeds
 
     @Inject
     lateinit var database: IBreedsCache
@@ -33,7 +29,7 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
     val imageListPresenter = ImageListPresenter()
 
     inner class ImageListPresenter : IImageListPresenter {
-        val image = mutableListOf<String>()
+        var image = listOf<String>()
         override var itemClickListener: ((ImageItemView) -> Unit)? = null
         override fun getCount() = image.size
         override fun bindView(view: ImageItemView) {
@@ -45,17 +41,23 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
         @RequiresApi(Build.VERSION_CODES.N)
         override fun likeBTN(view: ImageItemView) {
             view.setlike(logicCheckLike(view))
-
         }
+
     }
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
         loadDataBase()
-        loadData()
+
     }
 
+    fun setLike(pos: Int) {
+        database.putLikeImage(breedsName, imageListPresenter.image[pos])
+            .observeOn(AndroidSchedulers.mainThread()).subscribe()
+
+    }
 
     fun checkLikeBase(url: String): Boolean {
         breedsLikeStatus.values.forEach {
@@ -64,68 +66,49 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
         return false
     }
 
-
     @RequiresApi(Build.VERSION_CODES.N)
     fun logicCheckLike(view: ImageItemView): Boolean {
         val url = imageListPresenter.image[view.pos]
         val newUrl = listOf(url)
+
         return if (checkLikeBase(url)) {
 
-            if (breedsLikeStatus[listByImage[0]]?.size == 1)
-                breedsLikeStatus.remove(listByImage[0], newUrl) else breedsLikeStatus.values.remove(
-                newUrl
-            )
-            database.putDisLike(listByImage[0], url)
+            if (breedsLikeStatus[breedsName]?.size == 1)
+                breedsLikeStatus.remove(breedsName, newUrl) else breedsLikeStatus.values.remove(newUrl)
+            database.putDisLike(breedsName,url).observeOn(mainThreadScheduler).subscribe()
             false
 
         } else {
 
 
-            breedsLikeStatus.put(listByImage[0], newUrl)
+            breedsLikeStatus.put(breedsName, newUrl)
             putLike(view.pos)
             true
         }
     }
 
-
     fun putLike(pos: Int) {
-        database.putLikeImage(listByImage[0], imageListPresenter.image[pos])
+        database.putLikeImage(breedsName, imageListPresenter.image[pos])
             .observeOn(AndroidSchedulers.mainThread()).subscribe()
 
     }
 
     fun loadDataBase() {
+
         database.getAllLike().observeOn(mainThreadScheduler).subscribe({ list ->
+
             breedsLikeStatus.clear()
             breedsLikeStatus.putAll(list)
+            loadData()
         }, {
+
             Timber.e(it)
         })
     }
 
     fun loadData() {
-        if (listByImage.size == 1) {
-            imageApi.getImage(listByImage[0]).observeOn(mainThreadScheduler)
-                .subscribe({ list ->
-                    imageListPresenter.image.clear()
-                    imageListPresenter.image.addAll(list.message)
-                    println(list.message)
-                    viewState.updateList()
-                }, {
-                    Timber.e(it)
-                })
-        } else {
-            imageApi.getImage(listByImage[0], listByImage[1]).observeOn(mainThreadScheduler)
-                .subscribe({ list ->
-                    imageListPresenter.image.clear()
-                    imageListPresenter.image.addAll(list.message)
-                    println(list.message)
-                    viewState.updateList()
-                    listByImage[0] = listByImage[1]
-                }, {
-                    Timber.e(it)
-                })
-        }
+        imageListPresenter.image = breedsLikeStatus[breedsName]!!
+        viewState.updateList()
     }
 
 
@@ -133,6 +116,7 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
         router.exit()
         return true
     }
+
 
 }
 
