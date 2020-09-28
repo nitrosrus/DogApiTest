@@ -5,9 +5,9 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface BreedsView : MvpView {
+interface SubBreedsView : MvpView {
     fun init()
     fun updateList()
     fun settitle(text:String)
-     fun serverErrorInternet()
+    fun serverErrorInternet()
 }

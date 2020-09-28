@@ -64,6 +64,10 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
         return false
     }
 
+    fun btnBack() {
+        println("qwerty btn back")
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun logicCheckLike(view: ImageItemView): Boolean {
@@ -99,6 +103,7 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
             breedsLikeStatus.clear()
             breedsLikeStatus.putAll(list)
         }, {
+
             Timber.e(it)
         })
     }
@@ -112,6 +117,7 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
                     println(list.message)
                     viewState.updateList()
                 }, {
+                    viewState.serverErrorInternet()
                     Timber.e(it)
                 })
         } else {
@@ -123,6 +129,7 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
                     viewState.updateList()
                     listByImage[0] = listByImage[1]
                 }, {
+                    viewState.serverErrorInternet()
                     Timber.e(it)
                 })
         }

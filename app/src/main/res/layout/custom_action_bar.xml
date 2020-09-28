@@ -6,33 +6,60 @@
     android:gravity="center_vertical"
     android:weightSum="3">
 
-    <ImageView
-        android:id="@+id/iv_action_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_back" />
-
-    <TextView
-        android:id="@+id/tv_action_back"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Breeds" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_action_title"
+        <ImageView
+            android:id="@+id/iv_action_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_back"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/tv_action_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_action_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="SubBreeds" />
+        android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/iv_action_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@drawable/ic_share" />
+        <ImageView
+            android:id="@+id/iv_action_share"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+           android:layout_gravity="right"
+            android:src="@drawable/ic_share"
+            android:visibility="invisible" />
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

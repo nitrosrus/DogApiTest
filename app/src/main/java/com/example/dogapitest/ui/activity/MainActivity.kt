@@ -1,6 +1,5 @@
 package com.example.dogapitest.ui.activity
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.ActionBar
@@ -8,11 +7,10 @@ import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
 import com.example.dogapitest.mvp.presenter.MainPresenter
+import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.MainView
-import com.jakewharton.rxbinding3.view.visibility
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_action_bar.*
-import kotlinx.android.synthetic.main.item_breeds.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -20,7 +18,62 @@ import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
-class MainActivity : MvpAppCompatActivity(), MainView {
+class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
+
+
+
+
+
+    override fun setActionTitle(text: String) {
+        tv_action_title.text = text
+    }
+
+    override fun setBreedScreensSetting(text: String) {
+        tv_action_back.visibility = View.VISIBLE
+        iv_action_back.visibility = View.VISIBLE
+        iv_action_share.visibility = View.INVISIBLE
+        tv_action_back.text = tv_action_title.text
+        tv_action_title.text = text
+        ll_bottom.visibility = View.GONE
+    }
+
+    override fun setImageBreedScreenSetting(text: String) {
+        tv_action_back.visibility = View.VISIBLE
+        iv_action_back.visibility = View.VISIBLE
+        iv_action_share.visibility = View.VISIBLE
+        tv_action_back.text = tv_action_title.text
+        tv_action_title.text = text
+        ll_bottom.visibility = View.GONE
+    }
+
+    override fun setFerstScreenSetting(text: String) {
+        tv_action_back.visibility = View.INVISIBLE
+        iv_action_back.visibility = View.INVISIBLE
+        iv_action_share.visibility = View.INVISIBLE
+        tv_action_title.text = text
+    }
+
+
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        App.instance.appComponent.inject(this)
+        btn_list.setOnClickListener { presenter.btnList() }
+        btn_favorites.setOnClickListener { presenter.btnFavorites() }
+
+
+        val actionbar = supportActionBar?.apply {
+            setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
+            setDisplayShowCustomEnabled(true)
+            setCustomView(R.layout.custom_action_bar)
+            elevation
+        }
+
+        tv_action_back.setOnClickListener { onBackPressed() }
+
+    }
 
     val navigator = SupportAppNavigator(this, R.id.container)
 
@@ -31,27 +84,10 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     lateinit var presenter: MainPresenter
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        App.instance.appComponent.inject(this)
-        btn_list.setOnClickListener { presenter.btnList() }
-        btn_favorites.setOnClickListener { presenter.btnFavorites() }
-        val actionbar = supportActionBar
-        actionbar!!.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
-        actionbar.setDisplayShowCustomEnabled(true)
-        actionbar.setCustomView(R.layout.custom_action_bar)
-        actionbar.elevation
-
+    override fun init() {
 
     }
 
-
-
-    fun invisible() {
-//        if (iv_action_back.visibility == 0) iv_action_back.visibility =
-//            View.INVISIBLE else iv_action_back.visibility = View.VISIBLE
-    }
 
 
     @ProvidePresenter
@@ -60,14 +96,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     }
 
 
-    override fun init() {
-        tv_action_back.visibility = View.INVISIBLE
-        iv_action_back.visibility = View.INVISIBLE
-        iv_action_share.visibility = View.INVISIBLE
-        tv_action_title.text = "Breeds" //знаю что хардкод)
 
-
-    }
 
 
     override fun onResumeFragments() {
@@ -89,4 +118,6 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         }
         presenter.backClicked()
     }
+
+
 }

@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
@@ -20,9 +23,9 @@ import moxy.presenter.ProvidePresenter
 class LikeImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListener {
     companion object {
         const val IMAGEBREEDS_KEY = "likeimagebreeds"
-        fun newInstance(breedName:String) = LikeImageFragment().apply {
+        fun newInstance(breedName: String) = LikeImageFragment().apply {
             arguments = Bundle().apply {
-                putString (IMAGEBREEDS_KEY, breedName)
+                putString(IMAGEBREEDS_KEY, breedName)
             }
         }
 
@@ -60,7 +63,7 @@ class LikeImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonLis
 
     override fun init() {
 
-        rv_image.layoutManager = LinearLayoutManager(context)
+        rv_image.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         adapter = ImageRVAdapter(presenter.imageListPresenter).apply {
             breedsComponent.inject(this)
         }
@@ -74,9 +77,18 @@ class LikeImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonLis
     }
 
 
-
     override fun loadImage(url: String) {
 
+    }
+
+    override fun serverErrorInternet() {
+        val builder = AlertDialog.Builder(requireContext())
+        val dialogView = layoutInflater.inflate(R.layout.dialog_server_error, null)
+        val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        btnOk.setOnClickListener { dialog.dismiss() }
+        dialog.show()
     }
 
 

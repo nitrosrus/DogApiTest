@@ -9,4 +9,5 @@ interface BreedsImageView : MvpView {
     fun init()
     fun updateList()
     fun loadImage(url: String)
+    fun serverErrorInternet()
 }

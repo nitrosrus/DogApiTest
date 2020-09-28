@@ -20,7 +20,7 @@ class App : Application() {
 
     private var bComponent: BreedsSubcomponent? = null
 
-    val breeedsComponent: BreedsSubcomponent
+    val breedsComponent: BreedsSubcomponent
         get() = appComponent.breedsSubcomponent().also {
             bComponent = it
         }

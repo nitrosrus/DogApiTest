@@ -44,8 +44,10 @@ class BreedsRVAdapter(val presenter: IBreedsListPresener) :
             return tv_breeds.text as String
         }
 
-
-
+        override fun countVisible(set: Boolean) = with(containerView) {
+            if (set) tv_count_breeds.visibility = View.INVISIBLE else tv_count_breeds.visibility =
+                View.VISIBLE
+        }
 
     }
 

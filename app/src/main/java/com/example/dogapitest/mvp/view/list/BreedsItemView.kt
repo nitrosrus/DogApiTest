@@ -5,6 +5,8 @@ interface BreedsItemView {
     fun setBreed(text: String)
     fun setCountBreed(text: String)
     fun getBreads(): String
+    fun countVisible(set: Boolean)
+
 
 
 }

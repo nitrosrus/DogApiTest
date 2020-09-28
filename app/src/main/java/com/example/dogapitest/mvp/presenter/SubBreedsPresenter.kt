@@ -4,6 +4,7 @@ package com.example.dogapitest.mvp.presenter
 import com.example.dogapitest.mvp.model.repo.DogApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IBreedsListPresener
 import com.example.dogapitest.mvp.view.BreedsView
+import com.example.dogapitest.mvp.view.SubBreedsView
 import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.navigation.Screens
 import io.reactivex.rxjava3.core.Scheduler
@@ -14,7 +15,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: ArrayList<String>, ) : MvpPresenter<BreedsView>() {
+class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: ArrayList<String>) :
+    MvpPresenter<SubBreedsView>() {
 
 
     inner class SubBreedsListPresenter : IBreedsListPresener {
@@ -24,6 +26,7 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: Arra
         override fun bindView(view: BreedsItemView) {
             val breed = breeds[view.pos]
             view.setBreed(breed)
+            view.countVisible(breeds.elementAt(view.pos).isEmpty())
         }
     }
 
@@ -33,18 +36,19 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: Arra
     @Inject
     lateinit var apiBreeds: DogApiBreeds
 
+
     val subBreedsListPresenter = SubBreedsListPresenter()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-
         viewState.init()
         loadData()
-       subBreedsListPresenter.itemClickListener = { view ->
-           router.replaceScreen(Screens.ImageScreen(subBreeds.apply {
-               add(view.getBreads())
-           }))
+        subBreedsListPresenter.itemClickListener = { view ->
+            router.replaceScreen(Screens.ImageScreen(subBreeds.apply {
+                add(view.getBreads())
+            }))
         }
+
     }
 
 
@@ -55,10 +59,9 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: Arra
             subBreedsListPresenter.breeds.addAll(breedList.message)
             viewState.updateList()
         }, {
+            viewState.serverErrorInternet()
             Timber.e(it)
         })
-
-
     }
 
 

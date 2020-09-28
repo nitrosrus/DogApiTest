@@ -10,6 +10,7 @@ import io.reactivex.rxjava3.core.Scheduler
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
+import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -22,11 +23,13 @@ class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsV
         override fun getCount() = breeds.size
         override fun bindView(view: BreedsItemView) {
             listBreeds(view)
+            view.countVisible(breeds.values.elementAt(view.pos).isEmpty())
         }
 
         fun listBreeds(view: BreedsItemView) {
             view.setBreed(breeds.keys.elementAt(view.pos))
-            if (breeds.values.size > 0) view.setCountBreed(breeds.values.elementAt(view.pos).size.toString())
+            view.setCountBreed(breeds.values.elementAt(view.pos).size.toString())
+
         }
 
     }
@@ -57,6 +60,8 @@ class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsV
 
 
         }
+
+
     }
 
 
@@ -67,7 +72,8 @@ class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsV
             breedsListPresenter.breeds.putAll(breeds.message)
             viewState.updateList()
         }, {
-            println("qwerty " + it)
+            viewState.serverErrorInternet()
+            Timber.e(it)
         })
 
     }

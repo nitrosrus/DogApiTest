@@ -38,15 +38,15 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
         LayoutContainer, ImageItemView {
         override var pos = -1
         override fun setlike(boolean: Boolean) = with(containerView) {
-            if (boolean){
+            if (boolean) {
                 btn_like.setImageResource(R.drawable.ic_heart_font)
-            }else{
+            } else {
                 btn_like.setImageResource(R.drawable.ic_heart)
             }
         }
 
         override fun loadImage(url: String) = with(containerView) {
-            imageLoader.loadInto(url, iv_imageBreed)
+            imageLoader.loadInto(url, iv_imageBreed, iv_loadImage)
         }
 
 

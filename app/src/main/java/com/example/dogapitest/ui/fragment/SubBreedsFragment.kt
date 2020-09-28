@@ -1,36 +1,34 @@
 package com.example.dogapitest.ui.fragment
 
-import android.app.ActionBar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.BundleCompat
-import androidx.core.view.isGone
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
 import com.example.dogapitest.mvp.presenter.SubBreedsPresenter
-import com.example.dogapitest.mvp.view.BreedsView
+import com.example.dogapitest.mvp.view.DpVisible
+import com.example.dogapitest.mvp.view.SubBreedsView
 import com.example.dogapitest.ui.adapter.BreedsRVAdapter
-import com.jakewharton.rxbinding3.view.visibility
+import com.example.dogapitest.ui.dialog.ServerErrorDialog
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.breeds_fragment.*
+import kotlinx.android.synthetic.main.dialog_server_error.*
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 
-class SubBreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener {
+class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListener {
 
     companion object {
         const val SUBBREEDS_KEY = "subbreeds"
         fun newInstance(subBreeds: ArrayList<String>) = SubBreedsFragment().apply {
             arguments = Bundle().apply {
                 putStringArrayList(SUBBREEDS_KEY, subBreeds)
-
             }
         }
 
@@ -43,16 +41,16 @@ class SubBreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener
     lateinit var presenter: SubBreedsPresenter
 
 
-    private val breedsComponent = App.instance.breeedsComponent
+    private val breedsComponent = App.instance.breedsComponent
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ) = View.inflate(context, R.layout.sub_breed_fragment, null)
 
-
-
-
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as? DpVisible)?.setBreedScreensSetting(arguments?.get(SUBBREEDS_KEY).toString())
+    }
 
     @ProvidePresenter
     fun providePresenter() =
@@ -72,13 +70,30 @@ class SubBreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener
             breedsComponent.inject(this)
         }
         rv_breeds.adapter = adapter
+
+
     }
+
 
     override fun updateList() {
         adapter?.notifyDataSetChanged()
     }
 
-    fun getbreedsname() {
+    override fun settitle(text: String) {
+
+
+    }
+
+
+    override fun serverErrorInternet() {
+        //fragmentManager?.let { ServerErrorDialog.newInstance().show(it, "mydialog") }
+        val builder = AlertDialog.Builder(requireContext())
+        val dialogView = layoutInflater.inflate(R.layout.dialog_server_error, null)
+        val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        btnOk.setOnClickListener {dialog.dismiss() }
+        dialog.show()
 
     }
 
