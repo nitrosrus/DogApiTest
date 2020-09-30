@@ -19,7 +19,7 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: Arra
     MvpPresenter<SubBreedsView>() {
 
 
-    inner class SubBreedsListPresenter : IBreedsListPresener {
+     class SubBreedsListPresenter : IBreedsListPresener {
         val breeds = mutableListOf<String>()
         override var itemClickListener: ((BreedsItemView) -> Unit)? = null
         override fun getCount() = breeds.size
@@ -44,7 +44,7 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: Arra
         viewState.init()
         loadData()
         subBreedsListPresenter.itemClickListener = { view ->
-            router.replaceScreen(Screens.ImageScreen(subBreeds.apply {
+            router.navigateTo(Screens.ImageScreen(subBreeds.apply {
                 add(view.getBreads())
             }))
         }

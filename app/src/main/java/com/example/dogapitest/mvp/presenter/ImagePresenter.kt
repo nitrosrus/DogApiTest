@@ -64,9 +64,6 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
         return false
     }
 
-    fun btnBack() {
-        println("qwerty btn back")
-    }
 
 
     @RequiresApi(Build.VERSION_CODES.N)

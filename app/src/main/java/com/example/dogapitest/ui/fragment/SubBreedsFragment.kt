@@ -14,10 +14,8 @@ import com.example.dogapitest.mvp.presenter.SubBreedsPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.SubBreedsView
 import com.example.dogapitest.ui.adapter.BreedsRVAdapter
-import com.example.dogapitest.ui.dialog.ServerErrorDialog
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.breeds_fragment.*
-import kotlinx.android.synthetic.main.dialog_server_error.*
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

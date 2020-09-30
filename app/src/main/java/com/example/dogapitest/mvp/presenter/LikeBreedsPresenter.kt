@@ -46,7 +46,7 @@ class LikeBreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<Bre
         viewState.init()
         loadData()
         breedsListPresenter.itemClickListener = { view ->
-            router.replaceScreen(Screens.LikeImageScreen(view.getBreads()))
+            router.navigateTo(Screens.LikeImageScreen(view.getBreads()))
 
         }
     }

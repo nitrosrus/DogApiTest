@@ -17,7 +17,8 @@ import javax.inject.Inject
 class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsView>() {
 
 
-    inner class BreedsListPresenter : IBreedsListPresener {
+
+     class BreedsListPresenter : IBreedsListPresener {
         val breeds = mutableMapOf<String, List<String>>()
         override var itemClickListener: ((BreedsItemView) -> Unit)? = null
         override fun getCount() = breeds.size
@@ -48,12 +49,12 @@ class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsV
         loadData()
         breedsListPresenter.itemClickListener = { view ->
             if (breedsListPresenter.breeds[view.getBreads()]?.size == 0) {
-                router.replaceScreen(Screens.ImageScreen(ArrayList<String>().apply {
+                router.navigateTo(Screens.ImageScreen(ArrayList<String>().apply {
                     add(view.getBreads())
                 }))
 
             } else {
-                router.replaceScreen(Screens.SubBreadsScreen(ArrayList<String>().apply {
+                router.navigateTo(Screens.SubBreadsScreen(ArrayList<String>().apply {
                     add(view.getBreads())
                 }))
             }
