@@ -11,6 +11,7 @@ import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.MainView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_action_bar.*
+import kotlinx.android.synthetic.main.dialog_share_photo.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -19,9 +20,6 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
 class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
-
-
-
 
 
     override fun setActionTitle(text: String) {
@@ -54,8 +52,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
     }
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -63,8 +59,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         btn_list.setOnClickListener { presenter.btnList() }
         btn_favorites.setOnClickListener { presenter.btnFavorites() }
 
-
-        val actionbar = supportActionBar?.apply {
+        supportActionBar?.apply {
             setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
             setDisplayShowCustomEnabled(true)
             setCustomView(R.layout.custom_action_bar)
@@ -72,7 +67,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         }
 
         tv_action_back.setOnClickListener { onBackPressed() }
-
+        iv_action_share.setOnClickListener { }
     }
 
     val navigator = SupportAppNavigator(this, R.id.container)
@@ -89,14 +84,10 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
     }
 
 
-
     @ProvidePresenter
     fun providePresenter() = MainPresenter().apply {
         App.instance.appComponent.inject(this)
     }
-
-
-
 
 
     override fun onResumeFragments() {

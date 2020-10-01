@@ -3,4 +3,7 @@
     <string name="some_server_error">Some Server Error</string>
     <string name="try_connect_later">Try connect later</string>
     <string name="ok">Ok</string>
+    <string name="share">Share</string>
+    <string name="cancel">Cancel</string>
+    <string name="share_photo">Share photo</string>
 </resources>

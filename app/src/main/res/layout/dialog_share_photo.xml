@@ -11,19 +11,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:padding="8dp"
-        android:text="Share photo" />
+        android:text="@string/share_photo" />
 
     <Button
+        android:id="@+id/btn_share"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="8dp"
-        android:text="Share" />
+        android:text="@string/share" />
 
     <Button
+        android:id="@+id/btn_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel" />
+        android:text="@string/cancel" />
 
 
 </LinearLayout>

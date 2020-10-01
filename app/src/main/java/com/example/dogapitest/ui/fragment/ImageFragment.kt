@@ -98,5 +98,17 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
         dialog.show()
     }
 
+    override fun shareImage() {
+        val builder = AlertDialog.Builder(requireContext())
+        val dialogView = layoutInflater.inflate(R.layout.dialog_share_photo, null)
+        val btnShare = dialogView.findViewById<Button>(R.id.btn_share)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        btnShare.setOnClickListener {dialog.dismiss() }
+        btnCancel.setOnClickListener {dialog.dismiss() }
+        dialog.show()
+    }
+
 
 }

@@ -84,7 +84,6 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
 
 
     override fun serverErrorInternet() {
-        //fragmentManager?.let { ServerErrorDialog.newInstance().show(it, "mydialog") }
         val builder = AlertDialog.Builder(requireContext())
         val dialogView = layoutInflater.inflate(R.layout.dialog_server_error, null)
         val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
