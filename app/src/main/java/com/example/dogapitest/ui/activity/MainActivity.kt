@@ -49,6 +49,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         iv_action_back.visibility = View.INVISIBLE
         iv_action_share.visibility = View.INVISIBLE
         tv_action_title.text = text
+        ll_bottom.visibility = View.VISIBLE
     }
 
 
