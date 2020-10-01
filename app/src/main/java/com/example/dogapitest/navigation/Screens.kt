@@ -6,7 +6,7 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class Screens {
 
-    class BreedsScreen() : SupportAppScreen() {
+    class BreedsScreen : SupportAppScreen() {
         override fun getFragment() = BreedsFragment.newInstance()
     }
 

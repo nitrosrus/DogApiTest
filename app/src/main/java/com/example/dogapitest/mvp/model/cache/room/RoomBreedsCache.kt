@@ -1,7 +1,6 @@
 package com.example.dogapitest.mvp.model.cache.room
 
 
-import android.renderscript.Sampler
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.model.entity.room.db.Database
 import com.example.dogapitest.mvp.model.entity.room.db.RoomCacheLike

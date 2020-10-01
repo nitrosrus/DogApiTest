@@ -111,7 +111,6 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
                 .subscribe({ list ->
                     imageListPresenter.image.clear()
                     imageListPresenter.image.addAll(list.message)
-                    println(list.message)
                     viewState.updateList()
                 }, {
                     viewState.serverErrorInternet()
@@ -122,7 +121,6 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
                 .subscribe({ list ->
                     imageListPresenter.image.clear()
                     imageListPresenter.image.addAll(list.message)
-                    println(list.message)
                     viewState.updateList()
                     listByImage[0] = listByImage[1]
                 }, {

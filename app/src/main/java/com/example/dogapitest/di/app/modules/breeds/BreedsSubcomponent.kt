@@ -25,7 +25,7 @@ interface BreedsSubcomponent {
     fun inject(subBreedsPresenter: SubBreedsPresenter)
     fun inject(likeBreedsPresenter: LikeBreedsPresenter)
     fun inject(likeBreedsFragment: LikeBreedsFragment)
-    //fun inject(adapter: BreedsRVAdapter)
+
 
 
 }

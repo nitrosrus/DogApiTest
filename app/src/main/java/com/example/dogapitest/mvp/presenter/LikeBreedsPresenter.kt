@@ -2,7 +2,6 @@ package com.example.dogapitest.mvp.presenter
 
 
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.model.repo.DogApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IBreedsListPresener
 import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.list.BreedsItemView

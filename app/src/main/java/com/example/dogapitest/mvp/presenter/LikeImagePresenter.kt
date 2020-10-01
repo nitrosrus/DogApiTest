@@ -96,12 +96,10 @@ class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: Str
     fun loadDataBase() {
 
         database.getAllLike().observeOn(mainThreadScheduler).subscribe({ list ->
-
             breedsLikeStatus.clear()
             breedsLikeStatus.putAll(list)
             loadData()
         }, {
-
             Timber.e(it)
         })
     }

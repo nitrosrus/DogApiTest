@@ -33,11 +33,6 @@ interface IDataSource {
     @GET("/api/breed/{hound}/images")
     fun getBreedsImage(@Path("hound") breeds: String): Single<ImageBreedsList>
 
-
-    @GET("/api/breed/african/images")
-    fun gettest(): Single<ImageBreedsList>
-
-
     @GET("/api/breed/{hound}/{subBreed}/images")
     fun getSubBreedsImage(
         @Path("hound") breeds: String,

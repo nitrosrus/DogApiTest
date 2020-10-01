@@ -1,6 +1,6 @@
 package com.example.dogapitest.mvp.presenter.list
 
-import android.view.View
+
 import com.example.dogapitest.mvp.view.list.ImageItemView
 
 interface IImageListPresenter {

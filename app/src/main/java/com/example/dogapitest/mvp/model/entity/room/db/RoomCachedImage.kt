@@ -1,7 +1,6 @@
 package com.example.dogapitest.mvp.model.entity.room.db
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 
