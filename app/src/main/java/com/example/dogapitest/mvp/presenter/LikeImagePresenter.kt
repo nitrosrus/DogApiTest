@@ -53,11 +53,6 @@ class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: Str
 
     }
 
-    fun setLike(pos: Int) {
-        database.putLikeImage(breedsName, imageListPresenter.image[pos])
-            .observeOn(AndroidSchedulers.mainThread()).subscribe()
-
-    }
 
     fun checkLikeBase(url: String): Boolean {
         breedsLikeStatus.values.forEach {
