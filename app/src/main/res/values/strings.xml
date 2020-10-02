@@ -6,4 +6,6 @@
     <string name="share">Share</string>
     <string name="cancel">Cancel</string>
     <string name="share_photo">Share photo</string>
+    <string name="list">List</string>
+    <string name="favourites">Favourites</string>
 </resources>

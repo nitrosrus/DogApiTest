@@ -110,8 +110,8 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
             setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
             setDisplayShowCustomEnabled(true)
             setCustomView(R.layout.custom_action_bar)
-            elevation
-        }
+
+                    }
 
         tv_action_back.setOnClickListener { onBackPressed() }
         iv_action_share.setOnClickListener { }
