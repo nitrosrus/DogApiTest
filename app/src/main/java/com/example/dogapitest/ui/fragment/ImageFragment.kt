@@ -5,35 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
-import com.example.dogapitest.mvp.model.image.IImageLoader
 import com.example.dogapitest.mvp.presenter.ImagePresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.ui.adapter.ImageRVAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.custom_action_bar.*
 import kotlinx.android.synthetic.main.image_fragment.*
-import kotlinx.android.synthetic.main.item_image.*
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import javax.inject.Inject
 
 class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListener {
     companion object {
         const val IMAGEBREEDS_KEY = "imagebreeds"
-        fun newInstance(list: ArrayList<String>) = ImageFragment().apply {
+        const val IMAGESUBBREEDS_KEY = "imagesubbreds"
+        fun newInstance(breed: String, subBreeds: String?) = ImageFragment().apply {
             arguments = Bundle().apply {
-                putStringArrayList(IMAGEBREEDS_KEY, list)
+                putString(IMAGEBREEDS_KEY, breed)
+                putString(IMAGESUBBREEDS_KEY, subBreeds)
+
             }
         }
+
+
     }
 
     var adapter: ImageRVAdapter? = null
@@ -52,9 +52,20 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         breedsComponent.inject(this)
-        (activity as? DpVisible)?.setImageBreedScreenSetting(
+        setTing()
+    }
+
+    fun setTing() {
+        if (presenter.oneOrTwo())
+        (activity as DpVisible).setImageBreedScreenSetting(
             arguments?.get(IMAGEBREEDS_KEY).toString()
         )
+        else
+            (activity as DpVisible).setImageBreedScreenSetting(
+                arguments?.get(IMAGEBREEDS_KEY).toString(),
+                arguments?.get(IMAGESUBBREEDS_KEY).toString()
+            )
+
 
     }
 
@@ -62,7 +73,8 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
     fun providePresenter() =
         ImagePresenter(
             AndroidSchedulers.mainThread(),
-            arguments!![IMAGEBREEDS_KEY] as ArrayList<String>
+            arguments!![IMAGEBREEDS_KEY] as String,
+            arguments!![IMAGESUBBREEDS_KEY] as String?
         ).apply {
             breedsComponent.inject(this)
         }
@@ -70,7 +82,8 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
     override fun backClicked() = presenter.backClicked()
 
     override fun init() {
-        rv_image.layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
+
+        rv_image.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         adapter = ImageRVAdapter(presenter.imageListPresenter).apply {
             breedsComponent.inject(this)
         }
@@ -94,7 +107,7 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
         val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
         builder.setView(dialogView)
         val dialog = builder.create()
-        btnOk.setOnClickListener {dialog.dismiss() }
+        btnOk.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
 
@@ -105,8 +118,8 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
         val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
         builder.setView(dialogView)
         val dialog = builder.create()
-        btnShare.setOnClickListener {dialog.dismiss() }
-        btnCancel.setOnClickListener {dialog.dismiss() }
+        btnShare.setOnClickListener { dialog.dismiss() }
+        btnCancel.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
 

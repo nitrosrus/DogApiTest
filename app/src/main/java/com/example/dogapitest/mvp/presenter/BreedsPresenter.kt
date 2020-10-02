@@ -2,7 +2,7 @@ package com.example.dogapitest.mvp.presenter
 
 
 import com.example.dogapitest.mvp.model.repo.DogApiBreeds
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresener
+import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.navigation.Screens
@@ -17,8 +17,7 @@ import javax.inject.Inject
 class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsView>() {
 
 
-
-     class BreedsListPresenter : IBreedsListPresener {
+    class BreedsListPresenter : IBreedsListPresenter {
         val breeds = mutableMapOf<String, List<String>>()
         override var itemClickListener: ((BreedsItemView) -> Unit)? = null
         override fun getCount() = breeds.size
@@ -49,20 +48,11 @@ class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsV
         loadData()
         breedsListPresenter.itemClickListener = { view ->
             if (breedsListPresenter.breeds[view.getBreads()]?.size == 0) {
-                router.navigateTo(Screens.ImageScreen(ArrayList<String>().apply {
-                    add(view.getBreads())
-                }))
-
+                router.navigateTo(Screens.ImageScreen(view.getBreads(),null))
             } else {
-                router.navigateTo(Screens.SubBreadsScreen(ArrayList<String>().apply {
-                    add(view.getBreads())
-                }))
+                router.navigateTo(Screens.SubBreadsScreen(view.getBreads()))
             }
-
-
         }
-
-
     }
 
 

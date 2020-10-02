@@ -24,9 +24,9 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
 
     companion object {
         const val SUBBREEDS_KEY = "subbreeds"
-        fun newInstance(subBreeds: ArrayList<String>) = SubBreedsFragment().apply {
+        fun newInstance(subBreeds: String) = SubBreedsFragment().apply {
             arguments = Bundle().apply {
-                putStringArrayList(SUBBREEDS_KEY, subBreeds)
+                putString(SUBBREEDS_KEY, subBreeds)
             }
         }
 
@@ -47,7 +47,7 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? DpVisible)?.setBreedScreensSetting(arguments?.get(SUBBREEDS_KEY).toString())
+        (activity as? DpVisible)?.setSubBreedScreenSetting(arguments?.get(SUBBREEDS_KEY).toString())
 
     }
 
@@ -55,7 +55,7 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
     fun providePresenter() =
         SubBreedsPresenter(
             AndroidSchedulers.mainThread(),
-            arguments!![SUBBREEDS_KEY] as ArrayList<String>
+            arguments!![SUBBREEDS_KEY] as String
         ).apply {
             breedsComponent.inject(this)
         }

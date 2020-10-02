@@ -10,17 +10,19 @@ class Screens {
         override fun getFragment() = BreedsFragment.newInstance()
     }
 
-    class SubBreadsScreen(val breed: ArrayList<String>) : SupportAppScreen() {
+    class SubBreadsScreen(val breed: String) : SupportAppScreen() {
         override fun getFragment() = SubBreedsFragment.newInstance(breed)
     }
 
-    class ImageScreen(val list: ArrayList<String>) : SupportAppScreen() {
-        override fun getFragment() = ImageFragment.newInstance(list)
+    class ImageScreen(val breed: String, val subBreed: String?) : SupportAppScreen() {
+        override fun getFragment() = ImageFragment.newInstance(breed, subBreed)
     }
+
 
     class LikeBreedsScreen() : SupportAppScreen() {
         override fun getFragment() = LikeBreedsFragment.newInstance()
     }
+
     class LikeImageScreen(val breedName: String) : SupportAppScreen() {
         override fun getFragment() = LikeImageFragment.newInstance(breedName)
     }

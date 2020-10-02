@@ -2,8 +2,7 @@ package com.example.dogapitest.mvp.presenter
 
 
 import com.example.dogapitest.mvp.model.repo.DogApiBreeds
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresener
-import com.example.dogapitest.mvp.view.BreedsView
+import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.view.SubBreedsView
 import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.navigation.Screens
@@ -15,18 +14,18 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: ArrayList<String>) :
+class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val breeds: String) :
     MvpPresenter<SubBreedsView>() {
 
 
-     class SubBreedsListPresenter : IBreedsListPresener {
-        val breeds = mutableListOf<String>()
+     class SubBreedsListPresenter : IBreedsListPresenter {
+        val subBreeds = mutableListOf<String>()
         override var itemClickListener: ((BreedsItemView) -> Unit)? = null
-        override fun getCount() = breeds.size
+        override fun getCount() = subBreeds.size
         override fun bindView(view: BreedsItemView) {
-            val breed = breeds[view.pos]
+            val breed = subBreeds[view.pos]
             view.setBreed(breed)
-            view.countVisible(breeds.elementAt(view.pos).isEmpty())
+            view.countVisible(subBreeds.elementAt(view.pos).isEmpty())
         }
     }
 
@@ -44,9 +43,7 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: Arra
         viewState.init()
         loadData()
         subBreedsListPresenter.itemClickListener = { view ->
-            router.navigateTo(Screens.ImageScreen(subBreeds.apply {
-                add(view.getBreads())
-            }))
+            router.navigateTo(Screens.ImageScreen(breeds,view.getBreads()))
         }
 
     }
@@ -54,9 +51,9 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val subBreeds: Arra
 
     fun loadData() {
 
-        apiBreeds.getSubBreeds(subBreeds[0]).observeOn(mainThreadScheduler).subscribe({ breedList ->
-            subBreedsListPresenter.breeds.clear()
-            subBreedsListPresenter.breeds.addAll(breedList.message)
+        apiBreeds.getSubBreeds(breeds).observeOn(mainThreadScheduler).subscribe({ breedList ->
+            subBreedsListPresenter.subBreeds.clear()
+            subBreedsListPresenter.subBreeds.addAll(breedList.message)
             viewState.updateList()
         }, {
             viewState.serverErrorInternet()

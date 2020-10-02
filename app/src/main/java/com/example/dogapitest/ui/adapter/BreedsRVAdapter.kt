@@ -5,13 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogapitest.R
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresener
+import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.view.list.BreedsItemView
-import com.jakewharton.rxbinding3.view.visibility
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_breeds.view.*
 
-class BreedsRVAdapter(val presenter: IBreedsListPresener) :
+class BreedsRVAdapter(val presenter: IBreedsListPresenter) :
     RecyclerView.Adapter<BreedsRVAdapter.ViewHolder>() {
 
 

@@ -12,6 +12,7 @@ import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
 import com.example.dogapitest.mvp.presenter.LikeBreedsPresenter
 import com.example.dogapitest.mvp.view.BreedsView
+import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.ui.adapter.BreedsRVAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.breeds_fragment.*
@@ -40,6 +41,7 @@ class LikeBreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         breedsComponent.inject(this)
+        (activity as DpVisible).setLikeBreedScreenSetting()
     }
 
     @ProvidePresenter
@@ -60,6 +62,11 @@ class LikeBreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListene
 
     override fun updateList() {
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.loadData()
     }
 
     override fun settitle(text: String) {

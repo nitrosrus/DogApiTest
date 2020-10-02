@@ -1,12 +1,16 @@
 package com.example.dogapitest.mvp.presenter
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.model.repo.ImageApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
+import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.list.ImageItemView
+import com.example.dogapitest.ui.fragment.ImageFragment
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.InjectViewState
@@ -16,7 +20,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayList<String>) :
+class ImagePresenter(
+    val mainThreadScheduler: Scheduler,
+    val breed: String,
+    val subBreed: String?
+) :
     MvpPresenter<BreedsImageView>() {
 
     @Inject
@@ -30,6 +38,7 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
 
     private var breedsLikeStatus = mutableMapOf<String, List<String>>()
 
+    private val name=  if (subBreed.isNullOrEmpty()) breed else subBreed
     val imageListPresenter = ImageListPresenter()
 
     inner class ImageListPresenter : IImageListPresenter {
@@ -65,24 +74,20 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
     }
 
 
-
     @RequiresApi(Build.VERSION_CODES.N)
     fun logicCheckLike(view: ImageItemView): Boolean {
         val url = imageListPresenter.image[view.pos]
         val newUrl = listOf(url)
+
         return if (checkLikeBase(url)) {
+            if (breedsLikeStatus[name]?.size == 1)
+                breedsLikeStatus.remove(name, newUrl) else breedsLikeStatus.values.remove(newUrl)
+            database.putDisLike(name, url)
 
-            if (breedsLikeStatus[listByImage[0]]?.size == 1)
-                breedsLikeStatus.remove(listByImage[0], newUrl) else breedsLikeStatus.values.remove(
-                newUrl
-            )
-            database.putDisLike(listByImage[0], url)
             false
-
         } else {
 
-
-            breedsLikeStatus.put(listByImage[0], newUrl)
+            breedsLikeStatus.put(name, newUrl)
             putLike(view.pos)
             true
         }
@@ -90,7 +95,7 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
 
 
     fun putLike(pos: Int) {
-        database.putLikeImage(listByImage[0], imageListPresenter.image[pos])
+        database.putLikeImage(name, imageListPresenter.image[pos])
             .observeOn(AndroidSchedulers.mainThread()).subscribe()
 
     }
@@ -106,8 +111,8 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
     }
 
     fun loadData() {
-        if (listByImage.size == 1) {
-            imageApi.getImage(listByImage[0]).observeOn(mainThreadScheduler)
+        if (subBreed.isNullOrEmpty()) {
+            imageApi.getImage(breed).observeOn(mainThreadScheduler)
                 .subscribe({ list ->
                     imageListPresenter.image.clear()
                     imageListPresenter.image.addAll(list.message)
@@ -117,18 +122,19 @@ class ImagePresenter(val mainThreadScheduler: Scheduler, val listByImage: ArrayL
                     Timber.e(it)
                 })
         } else {
-            imageApi.getImage(listByImage[0], listByImage[1]).observeOn(mainThreadScheduler)
+            imageApi.getImage(breed, subBreed).observeOn(mainThreadScheduler)
                 .subscribe({ list ->
                     imageListPresenter.image.clear()
                     imageListPresenter.image.addAll(list.message)
                     viewState.updateList()
-                    listByImage[0] = listByImage[1]
                 }, {
                     viewState.serverErrorInternet()
                     Timber.e(it)
                 })
         }
     }
+
+    fun oneOrTwo() = subBreed.isNullOrEmpty()
 
 
     fun backClicked(): Boolean {

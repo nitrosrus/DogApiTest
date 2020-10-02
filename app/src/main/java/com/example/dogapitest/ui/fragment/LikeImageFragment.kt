@@ -13,6 +13,7 @@ import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
 import com.example.dogapitest.mvp.presenter.LikeImagePresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
+import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.ui.adapter.ImageRVAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.image_fragment.*
@@ -48,6 +49,7 @@ class LikeImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         breedsComponent.inject(this)
+        (activity as DpVisible).setLikeImageScreenSetting(arguments?.get(IMAGEBREEDS_KEY).toString())
     }
 
     @ProvidePresenter
@@ -98,8 +100,8 @@ class LikeImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonLis
         val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
         builder.setView(dialogView)
         val dialog = builder.create()
-        btnShare.setOnClickListener {dialog.dismiss() }
-        btnCancel.setOnClickListener {dialog.dismiss() }
+        btnShare.setOnClickListener { dialog.dismiss() }
+        btnCancel.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
 

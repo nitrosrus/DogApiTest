@@ -2,7 +2,7 @@ package com.example.dogapitest.mvp.presenter
 
 
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresener
+import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.navigation.Screens
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class LikeBreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsView>() {
 
 
-    inner class BreedsListPresenter : IBreedsListPresener {
+    inner class BreedsListPresenter : IBreedsListPresenter {
         val breeds = mutableMapOf<String, List<String>>()
         override var itemClickListener: ((BreedsItemView) -> Unit)? = null
         override fun getCount() = breeds.size
