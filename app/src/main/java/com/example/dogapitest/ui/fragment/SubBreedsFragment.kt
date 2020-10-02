@@ -47,7 +47,7 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? DpVisible)?.setSubBreedScreenSetting(arguments?.get(SUBBREEDS_KEY).toString())
+        (activity as DpVisible).setSubBreedScreenSetting(arguments?.get(SUBBREEDS_KEY).toString())
 
     }
 

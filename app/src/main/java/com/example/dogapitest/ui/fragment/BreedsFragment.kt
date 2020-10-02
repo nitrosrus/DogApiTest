@@ -41,7 +41,7 @@ class BreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         breedsComponent.inject(this)
-        (activity as? DpVisible)?.setFerstScreenSetting("Breeds")
+        (activity as DpVisible).setFerstScreenSetting("Breeds")
 
     }
 
