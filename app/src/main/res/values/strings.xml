@@ -8,4 +8,5 @@
     <string name="share_photo">Share photo</string>
     <string name="list">List</string>
     <string name="favourites">Favourites</string>
+    <string name="dialog_title_stub">Server ERROR internet</string>
 </resources>

@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
+import com.example.dogapitest.ui.network.ServerErrorInternet
 import com.example.dogapitest.mvp.presenter.SubBreedsPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.SubBreedsView
@@ -23,6 +22,7 @@ import moxy.presenter.ProvidePresenter
 class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListener {
 
     companion object {
+        const val DIALOG_FRAGMENT_TAG = "SubBreedsFragment"
         const val SUBBREEDS_KEY = "subbreeds"
         fun newInstance(subBreeds: String) = SubBreedsFragment().apply {
             arguments = Bundle().apply {
@@ -85,14 +85,15 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
 
 
     override fun serverErrorInternet() {
-        val builder = AlertDialog.Builder(requireContext())
-        val dialogView = layoutInflater.inflate(R.layout.dialog_server_error, null)
-        val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        btnOk.setOnClickListener {dialog.dismiss() }
-        dialog.show()
+
+        fragmentManager?.let {
+            ServerErrorInternet.newInstance().show(
+                it, DIALOG_FRAGMENT_TAG
+            )
+        }
 
     }
 
-}
+    }
+
+

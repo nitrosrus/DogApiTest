@@ -50,7 +50,6 @@ class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val breeds: String)
 
 
     fun loadData() {
-
         apiBreeds.getSubBreeds(breeds).observeOn(mainThreadScheduler).subscribe({ breedList ->
             subBreedsListPresenter.subBreeds.clear()
             subBreedsListPresenter.subBreeds.addAll(breedList.message)

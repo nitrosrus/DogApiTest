@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.appcompat.app.AlertDialog
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogapitest.App
@@ -15,6 +14,7 @@ import com.example.dogapitest.mvp.presenter.ImagePresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.ui.adapter.ImageRVAdapter
+import com.example.dogapitest.ui.network.ServerErrorInternet
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.image_fragment.*
 import moxy.MvpAppCompatFragment
@@ -38,6 +38,7 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
 
     var adapter: ImageRVAdapter? = null
 
+
     @InjectPresenter
     lateinit var presenter: ImagePresenter
 
@@ -53,6 +54,7 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
         super.onViewCreated(view, savedInstanceState)
         breedsComponent.inject(this)
         setTing()
+
     }
 
     fun setTing() {
@@ -102,26 +104,14 @@ class ImageFragment : MvpAppCompatFragment(), BreedsImageView, BackButtonListene
     }
 
     override fun serverErrorInternet() {
-        val builder = AlertDialog.Builder(requireContext())
-        val dialogView = layoutInflater.inflate(R.layout.dialog_server_error, null)
-        val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        btnOk.setOnClickListener { dialog.dismiss() }
-        dialog.show()
+        fragmentManager?.let {
+            ServerErrorInternet.newInstance().show(
+                it, SubBreedsFragment.DIALOG_FRAGMENT_TAG
+            )
+        }
     }
 
-    override fun shareImage() {
-        val builder = AlertDialog.Builder(requireContext())
-        val dialogView = layoutInflater.inflate(R.layout.dialog_share_photo, null)
-        val btnShare = dialogView.findViewById<Button>(R.id.btn_share)
-        val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        btnShare.setOnClickListener { dialog.dismiss() }
-        btnCancel.setOnClickListener { dialog.dismiss() }
-        dialog.show()
-    }
+
 
 
 }

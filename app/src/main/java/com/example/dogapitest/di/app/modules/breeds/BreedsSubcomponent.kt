@@ -1,5 +1,6 @@
 package com.example.dogapitest.di.app.modules.breeds
 
+
 import com.example.dogapitest.mvp.presenter.BreedsPresenter
 import com.example.dogapitest.mvp.presenter.LikeBreedsPresenter
 import com.example.dogapitest.mvp.presenter.SubBreedsPresenter
@@ -12,7 +13,8 @@ import dagger.Subcomponent
 
 @BreedsScope
 @Subcomponent(
-    modules = [BreedsModule::class]
+    modules = [BreedsModule::class
+    ]
 )
 
 interface BreedsSubcomponent {

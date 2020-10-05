@@ -10,5 +10,5 @@ interface BreedsImageView : MvpView {
     fun updateList()
     fun loadImage(url: String)
     fun serverErrorInternet()
-    fun shareImage()
+
 }

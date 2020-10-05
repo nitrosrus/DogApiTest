@@ -105,7 +105,6 @@ class ImagePresenter(
             breedsLikeStatus.clear()
             breedsLikeStatus.putAll(list)
         }, {
-
             Timber.e(it)
         })
     }

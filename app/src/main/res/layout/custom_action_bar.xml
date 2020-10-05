@@ -39,7 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:fitsSystemWindows="true"
-        android:src="@drawable/ic_share" />
+        android:src="@drawable/ic_share"
+        />
 
 
 </RelativeLayout>

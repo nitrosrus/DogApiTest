@@ -1,5 +1,6 @@
 package com.example.dogapitest.di.app
 
+
 import com.example.dogapitest.di.app.modules.*
 import com.example.dogapitest.di.app.modules.breeds.BreedsSubcomponent
 import com.example.dogapitest.di.app.modules.image.ImageSubcomponent
@@ -17,7 +18,6 @@ import javax.inject.Singleton
         ApiModule::class,
         ImageModule::class,
         DatabaseModule::class
-
 
     ]
 )

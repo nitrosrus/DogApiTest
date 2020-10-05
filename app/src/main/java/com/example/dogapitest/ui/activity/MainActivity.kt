@@ -1,19 +1,22 @@
 package com.example.dogapitest.ui.activity
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.ActionBar
-import androidx.core.graphics.ColorUtils
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
 import com.example.dogapitest.mvp.presenter.MainPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.MainView
+import com.example.dogapitest.ui.fragment.SubBreedsFragment
+import com.example.dogapitest.ui.network.ServerErrorInternet
+import com.example.dogapitest.ui.network.SharePhoto
+import com.jakewharton.rxbinding3.view.clicks
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_action_bar.*
+import kotlinx.android.synthetic.main.dialog_share_photo.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -23,6 +26,11 @@ import javax.inject.Inject
 
 class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
 
+
+    companion object {
+        const val MAIN_ACTIVITY = "MainActivity"
+
+    }
 
     override fun setActionTitle(text: String) {
         tv_action_title.text = text
@@ -104,18 +112,21 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         setContentView(R.layout.activity_main)
         App.instance.appComponent.inject(this)
         btn_list.setOnClickListener { presenter.btnList() }
+        //btn_favorites.setOnClickListener { presenter.btnFavorites() }
         btn_favorites.setOnClickListener { presenter.btnFavorites() }
 
         supportActionBar?.apply {
             setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
             setDisplayShowCustomEnabled(true)
             setCustomView(R.layout.custom_action_bar)
+        }
 
-                    }
-
+        iv_action_share.setOnClickListener { test() }
         tv_action_back.setOnClickListener { onBackPressed() }
-        iv_action_share.setOnClickListener { }
+
+
     }
+
 
     val navigator = SupportAppNavigator(this, R.id.container)
 
@@ -128,6 +139,10 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
 
     override fun init() {
 
+    }
+
+    fun test() {
+        SharePhoto.newInstance().show(supportFragmentManager, MAIN_ACTIVITY)
     }
 
 
