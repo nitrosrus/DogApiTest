@@ -41,7 +41,7 @@ class BreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         breedsComponent.inject(this)
-        (activity as DpVisible).setFerstScreenSetting("Breeds")
+        (activity as DpVisible).setFirstScreenSetting("Breeds")
 
     }
 
@@ -67,7 +67,7 @@ class BreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener {
         adapter?.notifyDataSetChanged()
     }
 
-    override fun settitle(text: String) {
+    override fun setTitle(text: String) {
         tv_action_title.text = text
     }
 
@@ -83,6 +83,6 @@ class BreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener {
 
     override fun onResume() {
         super.onResume()
-        (activity as? DpVisible)?.setFerstScreenSetting("Breeds")
+        (activity as? DpVisible)?.setFirstScreenSetting("Breeds")
     }
 }

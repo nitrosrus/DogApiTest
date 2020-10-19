@@ -69,7 +69,7 @@ class LikeBreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListene
         presenter.loadData()
     }
 
-    override fun settitle(text: String) {
+    override fun setTitle(text: String) {
 
         tv_action_title.text = text
     }

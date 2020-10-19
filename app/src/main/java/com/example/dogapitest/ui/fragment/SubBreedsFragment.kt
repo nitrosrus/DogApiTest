@@ -78,7 +78,7 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
         adapter?.notifyDataSetChanged()
     }
 
-    override fun settitle(text: String) {
+    override fun setTitle(text: String) {
 
 
     }

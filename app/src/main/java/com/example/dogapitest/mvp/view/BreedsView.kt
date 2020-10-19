@@ -8,6 +8,6 @@ import moxy.viewstate.strategy.StateStrategyType
 interface BreedsView : MvpView {
     fun init()
     fun updateList()
-    fun settitle(text:String)
+    fun setTitle(text:String)
      fun serverErrorInternet()
 }

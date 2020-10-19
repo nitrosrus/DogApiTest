@@ -1,16 +1,12 @@
 package com.example.dogapitest.mvp.presenter
 
-import android.app.Activity
-import android.app.ActivityManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.model.repo.ImageApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
-import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.list.ImageItemView
-import com.example.dogapitest.ui.fragment.ImageFragment
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.InjectViewState

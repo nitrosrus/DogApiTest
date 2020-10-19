@@ -63,7 +63,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         ll_bottom.visibility = View.GONE
     }
 
-    override fun setFerstScreenSetting(breed: String) {
+    override fun setFirstScreenSetting(breed: String) {
         tv_action_back.visibility = View.INVISIBLE
         iv_action_back.visibility = View.INVISIBLE
         iv_action_share.visibility = View.INVISIBLE
