@@ -27,7 +27,8 @@ class BreedsRVAdapter(val presenter: IBreedsListPresenter) :
     override fun getItemCount() = presenter.getCount()
 
 
-    class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+    class ViewHolder(override val containerView: View)
+        : RecyclerView.ViewHolder(containerView),
         LayoutContainer, BreedsItemView {
         override var pos = -1
 

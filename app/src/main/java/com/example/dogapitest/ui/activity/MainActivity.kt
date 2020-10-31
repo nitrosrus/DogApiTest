@@ -1,6 +1,5 @@
 package com.example.dogapitest.ui.activity
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.ActionBar
@@ -10,13 +9,10 @@ import com.example.dogapitest.R
 import com.example.dogapitest.mvp.presenter.MainPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.MainView
-import com.example.dogapitest.ui.fragment.SubBreedsFragment
-import com.example.dogapitest.ui.network.ServerErrorInternet
 import com.example.dogapitest.ui.network.SharePhoto
-import com.jakewharton.rxbinding3.view.clicks
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_action_bar.*
-import kotlinx.android.synthetic.main.dialog_share_photo.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -32,6 +28,8 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
 
     }
 
+    lateinit var bottomBar: BottomNavigationView
+
     override fun setActionTitle(text: String) {
         tv_action_title.text = text
     }
@@ -42,7 +40,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         iv_action_share.visibility = View.INVISIBLE
         tv_action_back.text = tv_action_title.text
         tv_action_title.text = text
-        ll_bottom.visibility = View.GONE
+        bab_nav.visibility = View.GONE
     }
 
     override fun setImageBreedScreenSetting(text: String) {
@@ -51,7 +49,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         iv_action_share.visibility = View.VISIBLE
         tv_action_back.text = tv_action_title.text
         tv_action_title.text = text
-        ll_bottom.visibility = View.GONE
+        bab_nav.visibility = View.GONE
     }
 
     override fun setImageBreedScreenSetting(breed: String, subBreed: String) {
@@ -60,7 +58,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         iv_action_share.visibility = View.VISIBLE
         tv_action_back.text = tv_action_title.text
         tv_action_title.text = subBreed
-        ll_bottom.visibility = View.GONE
+        bab_nav.visibility = View.GONE
     }
 
     override fun setFirstScreenSetting(breed: String) {
@@ -68,11 +66,8 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         iv_action_back.visibility = View.INVISIBLE
         iv_action_share.visibility = View.INVISIBLE
         tv_action_title.text = breed
-        ll_bottom.visibility = View.VISIBLE
-        btn_list.setColorFilter(Color.parseColor("#039BE5"))
-        tv_btn_list.setTextColor(Color.parseColor("#039BE5"))
-        btn_favorites.setColorFilter(Color.parseColor("#FF000000"))
-        tv_btn_favorites.setTextColor(Color.parseColor("#FF000000"))
+        bab_nav.visibility = View.VISIBLE
+
     }
 
     override fun setSubBreedScreenSetting(breed: String) {
@@ -82,19 +77,14 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         tv_action_back.text = tv_action_title.text
         tv_action_title.text = breed
         tv_action_back.text = "Back"
-        ll_bottom.visibility = View.GONE
+        bab_nav.visibility = View.GONE
     }
 
     override fun setLikeBreedScreenSetting() {
         tv_action_back.visibility = View.INVISIBLE
         iv_action_back.visibility = View.INVISIBLE
         iv_action_share.visibility = View.INVISIBLE
-        tv_action_title.text = tv_btn_favorites.text
-        ll_bottom.visibility = View.VISIBLE
-        btn_list.setColorFilter(Color.parseColor("#FF000000"))
-        tv_btn_list.setTextColor(Color.parseColor("#FF000000"))
-        btn_favorites.setColorFilter(Color.parseColor("#039BE5"))
-        tv_btn_favorites.setTextColor(Color.parseColor("#039BE5"))
+        bab_nav.visibility = View.VISIBLE
     }
 
     override fun setLikeImageScreenSetting(breed: String) {
@@ -103,7 +93,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         iv_action_share.visibility = View.VISIBLE
         tv_action_back.text = tv_action_title.text
         tv_action_title.text = breed
-        ll_bottom.visibility = View.GONE
+        bab_nav.visibility = View.GONE
     }
 
 
@@ -111,14 +101,20 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         App.instance.appComponent.inject(this)
-        btn_list.setOnClickListener { presenter.btnList() }
-        //btn_favorites.setOnClickListener { presenter.btnFavorites() }
-        btn_favorites.setOnClickListener { presenter.btnFavorites() }
-
         supportActionBar?.apply {
             setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
             setDisplayShowCustomEnabled(true)
             setCustomView(R.layout.custom_action_bar)
+        }
+        bottomBar = findViewById(R.id.bab_nav)
+        bottomBar.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.btn_list -> { presenter.btnList()
+                }
+                R.id.btn_favorites -> {presenter.btnFavorites()
+                }
+            }
+            true
         }
 
         iv_action_share.setOnClickListener { test() }
