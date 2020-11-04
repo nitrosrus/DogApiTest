@@ -8,9 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_dog_ceo_foreground"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_dog_ceo_round"
         android:supportsRtl="true"
         android:name=".App"
         android:theme="@style/AppTheme"
