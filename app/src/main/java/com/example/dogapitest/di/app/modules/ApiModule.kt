@@ -2,7 +2,7 @@ package com.example.dogapitest.di.app.modules
 
 import com.example.dogapitest.App
 import com.example.dogapitest.mvp.model.api.IDataSource
-import com.example.dogapitest.mvp.model.network.NetworkStatus
+import com.example.dogapitest.ui.network.NetworkStatus
 import com.example.dogapitest.ui.network.AndroidNetworkStatus
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
@@ -46,7 +46,7 @@ class ApiModule {
 
     @Singleton
     @Provides
-    fun networkStatus(app:App):NetworkStatus{
+    fun networkStatus(app:App): NetworkStatus {
         return AndroidNetworkStatus(app)
     }
 }

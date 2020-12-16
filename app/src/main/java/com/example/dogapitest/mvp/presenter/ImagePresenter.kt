@@ -20,8 +20,7 @@ class ImagePresenter(
     val mainThreadScheduler: Scheduler,
     val breed: String,
     val subBreed: String?
-) :
-    MvpPresenter<BreedsImageView>() {
+) : MvpPresenter<BreedsImageView>() {
 
     @Inject
     lateinit var router: Router
@@ -35,6 +34,7 @@ class ImagePresenter(
     private var breedsLikeStatus = mutableMapOf<String, List<String>>()
 
     private val name=  if (subBreed.isNullOrEmpty()) breed else subBreed
+
     val imageListPresenter = ImageListPresenter()
 
     inner class ImageListPresenter : IImageListPresenter {
@@ -82,7 +82,6 @@ class ImagePresenter(
 
             false
         } else {
-
             breedsLikeStatus.put(name, newUrl)
             putLike(view.pos)
             true

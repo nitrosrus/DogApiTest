@@ -7,21 +7,6 @@ import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-
-/*
-LIST ALL BREEDS
-https://dog.ceo/api/breeds/list/all
-
-LIST ALL BREED IMAGES
-https://dog.ceo/api/breed/{hound}/images
-
-LIST ALL SUB-BREED
-https://dog.ceo/api/breed/{hound}/list
-
-LIST ALL SUB-BREED IMAGES
-https://dog.ceo/api/breed/{hound breed}/{afghan subbreed}/images
-
- */
 interface IDataSource {
 
     @GET("/api/breeds/list/all")

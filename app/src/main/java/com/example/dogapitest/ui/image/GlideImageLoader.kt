@@ -10,7 +10,7 @@ import com.example.dogapitest.R
 import com.bumptech.glide.request.target.Target
 import com.example.dogapitest.mvp.model.cache.image.IImageCache
 import com.example.dogapitest.mvp.model.image.IImageLoader
-import com.example.dogapitest.mvp.model.network.NetworkStatus
+import com.example.dogapitest.ui.network.NetworkStatus
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
@@ -21,14 +21,14 @@ class GlideImageLoader(override val cache: IImageCache, val networkStatus: Netwo
 
     override fun loadInto(url: String, container: ImageView, preload: ImageView) {
         Timber.d("Loading Image $url ")
-        networkStatus.isOnlineSingle().observeOn(AndroidSchedulers.mainThread())
+
+        networkStatus.isOnline().observeOn(AndroidSchedulers.mainThread())
             .subscribe { isOnLine ->
                 if (isOnLine) {
                     Glide.with(preload.context).load(R.raw.load).into(preload)
                     Timber.d("Online. Loading image from internet")
                     Glide.with(container.context).asBitmap().load(url)
                         .listener(object : RequestListener<Bitmap> {
-
                             override fun onLoadFailed(
                                 e: GlideException?,
                                 model: Any?,

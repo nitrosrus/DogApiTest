@@ -16,6 +16,13 @@ import javax.inject.Inject
 @InjectViewState
 class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsView>() {
 
+    @Inject
+    lateinit var router: Router
+
+    @Inject
+    lateinit var apiBreeds: DogApiBreeds
+
+    val breedsListPresenter = BreedsListPresenter()
 
     class BreedsListPresenter : IBreedsListPresenter {
         val breeds = mutableMapOf<String, List<String>>()
@@ -34,13 +41,7 @@ class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsV
 
     }
 
-    @Inject
-    lateinit var router: Router
 
-    @Inject
-    lateinit var apiBreeds: DogApiBreeds
-
-    val breedsListPresenter = BreedsListPresenter()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -48,7 +49,7 @@ class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsV
         loadData()
         breedsListPresenter.itemClickListener = { view ->
             if (breedsListPresenter.breeds[view.getBreads()]?.size == 0) {
-                router.navigateTo(Screens.ImageScreen(view.getBreads(),null))
+                router.navigateTo(Screens.ImageScreen(view.getBreads(), null))
             } else {
                 router.navigateTo(Screens.SubBreadsScreen(view.getBreads()))
             }
@@ -57,16 +58,15 @@ class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsV
 
 
     fun loadData() {
-
-        apiBreeds.getBreeds().observeOn(mainThreadScheduler).subscribe({ breeds ->
-            breedsListPresenter.breeds.clear()
-            breedsListPresenter.breeds.putAll(breeds.message)
-            viewState.updateList()
-        }, {
-            viewState.serverErrorInternet()
-            Timber.e(it)
-        })
-
+        apiBreeds.getBreeds().observeOn(mainThreadScheduler)
+            .subscribe({ breeds ->
+                breedsListPresenter.breeds.clear()
+                breedsListPresenter.breeds.putAll(breeds.message)
+                viewState.updateList()
+            }, {
+                Timber.e(it)
+                viewState.serverErrorInternet()
+            })
     }
 
 

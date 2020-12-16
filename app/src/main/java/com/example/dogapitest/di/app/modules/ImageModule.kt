@@ -6,7 +6,7 @@ import com.example.dogapitest.mvp.model.cache.image.IImageCache
 import com.example.dogapitest.mvp.model.cache.image.room.RoomImageCache
 import com.example.dogapitest.mvp.model.entity.room.db.Database
 import com.example.dogapitest.mvp.model.image.IImageLoader
-import com.example.dogapitest.mvp.model.network.NetworkStatus
+import com.example.dogapitest.ui.network.NetworkStatus
 import com.example.dogapitest.ui.image.GlideImageLoader
 import dagger.Module
 import dagger.Provides

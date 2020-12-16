@@ -5,8 +5,7 @@ import androidx.room.*
 
 @Entity
 data class RoomCacheLike(
-    val breedName: String,
-    @PrimaryKey val url: String
-
+    @PrimaryKey val url: String,
+    val breedName: String
 )
 

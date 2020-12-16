@@ -3,11 +3,7 @@ package com.example.dogapitest.mvp.model.repo
 import com.example.dogapitest.mvp.model.api.IDataSource
 import com.example.dogapitest.mvp.model.breedsModel.ImageBreedsList
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.model.network.NetworkStatus
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.CompletableObserver
-import io.reactivex.rxjava3.core.CompletableOnSubscribe
+import com.example.dogapitest.ui.network.NetworkStatus
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
