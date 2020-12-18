@@ -15,9 +15,6 @@ class MainPresenter() : MvpPresenter<MainView>() {
     @Inject
     lateinit var router: Router
 
-
-
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()

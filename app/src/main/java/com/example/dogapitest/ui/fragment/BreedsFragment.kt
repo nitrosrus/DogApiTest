@@ -26,6 +26,7 @@ class BreedsFragment : MvpAppCompatFragment(), BreedsView, BackButtonListener {
         fun newInstance() = BreedsFragment()
     }
 
+
     var adapter: BreedsRVAdapter? = null
 
     @InjectPresenter

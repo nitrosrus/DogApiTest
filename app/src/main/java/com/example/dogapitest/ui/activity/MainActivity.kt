@@ -18,19 +18,87 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
+import java.util.prefs.AbstractPreferences
 import javax.inject.Inject
 
 class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
 
-
     companion object {
         const val MAIN_ACTIVITY = "MainActivity"
-
     }
 
     lateinit var bottomBar: BottomNavigationView
 
-    override fun setActionTitle(text: String) {
+    lateinit var navigator: SupportAppNavigator
+
+    @Inject
+    lateinit var navigatorHolder: NavigatorHolder
+
+    @InjectPresenter
+    lateinit var presenter: MainPresenter
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        App.instance.appComponent.inject(this)
+    }
+
+    @ProvidePresenter
+    fun providePresenter() = MainPresenter().apply {
+        App.instance.appComponent.inject(this)
+    }
+
+
+    override fun init() {
+        supportActionBar?.apply {
+            setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
+            setDisplayShowCustomEnabled(true)
+            setCustomView(R.layout.custom_action_bar)
+        }
+        navigator = SupportAppNavigator(this, R.id.container)
+        bottomBar = findViewById(R.id.bab_nav)
+        bottomBar.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.btn_list -> {
+                    presenter.btnList()
+                }
+                R.id.btn_favorites -> {
+                    presenter.btnFavorites()
+                }
+            }
+            true
+        }
+
+        iv_action_share.setOnClickListener { sharePhotoClick() }
+        tv_action_back.setOnClickListener { onBackPressed() }
+    }
+
+    private fun sharePhotoClick() {
+        SharePhoto.newInstance().show(supportFragmentManager, MAIN_ACTIVITY)
+    }
+
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(navigator)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        navigatorHolder.removeNavigator()
+    }
+
+    override fun onBackPressed() {
+        supportFragmentManager.fragments.forEach {
+            if (it is BackButtonListener && it.backClicked()) {
+                return
+            }
+        }
+        presenter.backClicked()
+    }
+
+    override fun setActionBarTitle(text: String) {
         tv_action_title.text = text
     }
 
@@ -95,78 +163,4 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
         tv_action_title.text = breed
         bab_nav.visibility = View.GONE
     }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        App.instance.appComponent.inject(this)
-        supportActionBar?.apply {
-            setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
-            setDisplayShowCustomEnabled(true)
-            setCustomView(R.layout.custom_action_bar)
-        }
-        bottomBar = findViewById(R.id.bab_nav)
-        bottomBar.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.btn_list -> { presenter.btnList()
-                }
-                R.id.btn_favorites -> {presenter.btnFavorites()
-                }
-            }
-            true
-        }
-
-        iv_action_share.setOnClickListener { test() }
-        tv_action_back.setOnClickListener { onBackPressed() }
-
-
-    }
-
-
-    val navigator = SupportAppNavigator(this, R.id.container)
-
-    @Inject
-    lateinit var navigatorHolder: NavigatorHolder
-
-    @InjectPresenter
-    lateinit var presenter: MainPresenter
-
-
-    override fun init() {
-
-    }
-
-    fun test() {
-        SharePhoto.newInstance().show(supportFragmentManager, MAIN_ACTIVITY)
-    }
-
-
-    @ProvidePresenter
-    fun providePresenter() = MainPresenter().apply {
-        App.instance.appComponent.inject(this)
-    }
-
-
-    override fun onResumeFragments() {
-        super.onResumeFragments()
-        navigatorHolder.setNavigator(navigator)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        navigatorHolder.removeNavigator()
-
-    }
-
-    override fun onBackPressed() {
-        supportFragmentManager.fragments.forEach {
-            if (it is BackButtonListener && it.backClicked()) {
-                return
-            }
-        }
-        presenter.backClicked()
-    }
-
-
 }
