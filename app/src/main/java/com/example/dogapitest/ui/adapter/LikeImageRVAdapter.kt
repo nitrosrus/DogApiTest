@@ -9,12 +9,14 @@ import com.example.dogapitest.R
 import com.example.dogapitest.databinding.ItemImageBinding
 import com.example.dogapitest.mvp.model.image.IImageLoader
 import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
+import com.example.dogapitest.mvp.presenter.list.ILikeImageListPresenter
 import com.example.dogapitest.mvp.view.list.ImageItemView
+import com.example.dogapitest.mvp.view.list.LikeImageItemView
 
 import javax.inject.Inject
 
-class ImageRVAdapter(val presenter: IImageListPresenter) :
-    RecyclerView.Adapter<ImageRVAdapter.ViewHolder>() {
+class LikeImageRVAdapter(val presenter: ILikeImageListPresenter) :
+    RecyclerView.Adapter<LikeImageRVAdapter.ViewHolder>() {
 
     @Inject
     lateinit var imageLoader: IImageLoader<ImageView>
@@ -39,7 +41,7 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
 
     inner class ViewHolder(val containerView: View) :
         RecyclerView.ViewHolder(containerView),
-        ImageItemView {
+        LikeImageItemView {
         override var pos = -1
         override fun setlike(boolean: Boolean) = with(containerView) {
             if (boolean) {
@@ -51,6 +53,18 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
 
         override fun loadImage(url: String) = with(containerView) {
             imageLoader.loadInto(url, binding.ivImageBreed, binding.ivLoadImage)
+        }
+
+        override fun setBreed(breeds: String) {
+            TODO("Not yet implemented")
+        }
+
+        override fun setCountBreed(countBreeds: String) {
+            TODO("Not yet implemented")
+        }
+
+        override fun getBreads(): String {
+            TODO("Not yet implemented")
         }
 
 

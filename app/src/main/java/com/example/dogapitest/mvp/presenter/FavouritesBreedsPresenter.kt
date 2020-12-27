@@ -2,9 +2,11 @@ package com.example.dogapitest.mvp.presenter
 
 
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
+import com.example.dogapitest.mvp.presenter.list.IFavouritesBreedsListPresenter
 import com.example.dogapitest.mvp.view.BreedsView
-import com.example.dogapitest.mvp.view.list.BreedsItemView
+import com.example.dogapitest.mvp.view.FavouritesBreedsView
+import com.example.dogapitest.mvp.view.list.FavouritesBreedsItemView
+import com.example.dogapitest.mvp.view.list.LikeImageItemView
 import com.example.dogapitest.navigation.Screens
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.InjectViewState
@@ -14,18 +16,19 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class LikeBreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsView>() {
+class FavouritesBreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<FavouritesBreedsView>() {
 
 
-    inner class BreedsListPresenter : IBreedsListPresenter {
+    inner class BreedsListPresenter : IFavouritesBreedsListPresenter {
+        override var itemClick: ((String) -> Unit)?=null
         val breeds = mutableMapOf<String, List<String>>()
-        override var itemClickListener: ((BreedsItemView) -> Unit)? = null
+        override var itemClickListener: ((FavouritesBreedsItemView) -> Unit)? = null
         override fun getCount() = breeds.size
-        override fun bindView(view: BreedsItemView) {
+        override fun bindView(view: FavouritesBreedsItemView) {
             listBreeds(view)
         }
 
-        fun listBreeds(view: BreedsItemView) {
+        fun listBreeds(view: FavouritesBreedsItemView) {
             view.setBreed(breeds.keys.elementAt(view.pos))
             if (breeds.values.size > 0) view.setCountBreed(breeds.values.elementAt(view.pos).size.toString())
         }
@@ -56,7 +59,7 @@ class LikeBreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<Bre
         database.getAllLike().observeOn(mainThreadScheduler).subscribe({ breeds ->
             breedsListPresenter.breeds.clear()
             breedsListPresenter.breeds.putAll(breeds)
-            viewState.updateList()
+            viewState.updateRVAdapter()
         }, {
             Timber.e(it)
         })

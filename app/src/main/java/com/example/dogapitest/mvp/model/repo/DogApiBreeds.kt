@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class DogApiBreeds(
     val api: IDataSource
 ) {
-    fun getBreeds(): Single<BreedsList> = api.getBreeds().subscribeOn(Schedulers.io())
+    fun getBreeds(): Single<BreedsList> = api.getBreeds()
 
     fun getSubBreeds(breed: String): Single<SubBreedsList> =
         api.getSubBreeds(breed).subscribeOn(Schedulers.io())

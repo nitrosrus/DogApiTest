@@ -4,8 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
+import com.example.dogapitest.mvp.presenter.list.ILikeImageListPresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
 import com.example.dogapitest.mvp.view.list.ImageItemView
+import com.example.dogapitest.mvp.view.list.LikeImageItemView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.InjectViewState
@@ -101,7 +103,7 @@ class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: Str
 
     fun loadData() {
         imageListPresenter.image = breedsLikeStatus[breedsName]!!
-        viewState.updateList()
+        viewState.updateRVAdapter()
     }
 
 

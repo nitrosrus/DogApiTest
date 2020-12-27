@@ -19,8 +19,8 @@ class Screens {
     }
 
 
-    class LikeBreedsScreen() : SupportAppScreen() {
-        override fun getFragment() = LikeBreedsFragment.newInstance()
+    class FavouritesBreedsScreen() : SupportAppScreen() {
+        override fun getFragment() = FavouritesBreedsFragment.newInstance()
     }
 
     class LikeImageScreen(val breedName: String) : SupportAppScreen() {

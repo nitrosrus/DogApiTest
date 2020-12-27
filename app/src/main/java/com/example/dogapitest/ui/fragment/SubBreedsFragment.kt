@@ -8,18 +8,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
+import com.example.dogapitest.databinding.SubBreedFragmentBinding
 import com.example.dogapitest.ui.network.ServerErrorInternet
 import com.example.dogapitest.mvp.presenter.SubBreedsPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.SubBreedsView
 import com.example.dogapitest.ui.adapter.BreedsRVAdapter
+import com.example.dogapitest.ui.adapter.SubBreedsRVAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.breeds_fragment.*
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 
-class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListener {
+class SubBreedsFragment : MvpAppCompatFragment(R.layout.sub_breed_fragment), SubBreedsView,
+    BackButtonListener {
 
     companion object {
         const val DIALOG_FRAGMENT_TAG = "SubBreedsFragment"
@@ -33,18 +35,27 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
     }
 
 
-    var adapter: BreedsRVAdapter? = null
+    var adapter: SubBreedsRVAdapter? = null
 
     @InjectPresenter
     lateinit var presenter: SubBreedsPresenter
 
+    private var _binding: SubBreedFragmentBinding? = null
+
+    private val binding get() = _binding!!
 
     private val breedsComponent = App.instance.breedsComponent
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ) = View.inflate(context, R.layout.sub_breed_fragment, null)
-
+    ): View {
+        _binding = SubBreedFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as DpVisible).setSubBreedScreenSetting(arguments?.get(SUBBREEDS_KEY).toString())
@@ -64,17 +75,17 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
     override fun backClicked() = presenter.backClicked()
 
     override fun init() {
-        rv_breeds.layoutManager = LinearLayoutManager(context)
-        adapter = BreedsRVAdapter(presenter.subBreedsListPresenter).apply {
+        binding.rvBreeds.layoutManager = LinearLayoutManager(context)
+        adapter = SubBreedsRVAdapter(presenter.subBreedsListPresenter).apply {
             breedsComponent.inject(this)
         }
-        rv_breeds.adapter = adapter
+        binding.rvBreeds.adapter = adapter
 
 
     }
 
 
-    override fun updateList() {
+    override fun updateRVAdapter() {
         adapter?.notifyDataSetChanged()
     }
 
@@ -94,6 +105,6 @@ class SubBreedsFragment : MvpAppCompatFragment(), SubBreedsView, BackButtonListe
 
     }
 
-    }
+}
 
 

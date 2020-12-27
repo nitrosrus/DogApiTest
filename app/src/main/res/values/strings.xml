@@ -9,4 +9,7 @@
     <string name="list">List</string>
     <string name="favourites">Favourites</string>
     <string name="dialog_title_stub">Server ERROR internet</string>
+    <string name="back">back</string>
+    <string name="breeds">Breeds</string>
+    <string name="setFirstScreen">Breeds</string>
 </resources>

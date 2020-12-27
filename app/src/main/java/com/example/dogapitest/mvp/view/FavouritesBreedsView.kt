@@ -5,8 +5,9 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface BreedsView : MvpView {
+interface FavouritesBreedsView : MvpView {
     fun init()
     fun updateRVAdapter()
-    fun serverErrorInternet()
+    fun setTitle(text:String)
+     fun serverErrorInternet()
 }

@@ -110,7 +110,7 @@ class ImagePresenter(
                 .subscribe({ list ->
                     imageListPresenter.image.clear()
                     imageListPresenter.image.addAll(list.message)
-                    viewState.updateList()
+                    viewState.updateRVAdapter()
                 }, {
                     viewState.serverErrorInternet()
                     Timber.e(it)
@@ -120,7 +120,7 @@ class ImagePresenter(
                 .subscribe({ list ->
                     imageListPresenter.image.clear()
                     imageListPresenter.image.addAll(list.message)
-                    viewState.updateList()
+                    viewState.updateRVAdapter()
                 }, {
                     viewState.serverErrorInternet()
                     Timber.e(it)
