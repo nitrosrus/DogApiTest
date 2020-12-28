@@ -38,12 +38,13 @@ class AndroidNetworkStatus(val context: Context) : NetworkStatus {
             })
     }
 
-    override fun isOnline() = statusSubject
+    override fun isOnline() = statusSubject.value
+
+    override fun isOnlineObserver() = statusSubject
 
     override fun isOnlineSingle() =
         statusSubject.timeout(NETWORK_CHECK_TIMEOUT_MILLS, TimeUnit.MILLISECONDS)
             .onErrorReturnItem(false).first(false)
-
 
 
 }

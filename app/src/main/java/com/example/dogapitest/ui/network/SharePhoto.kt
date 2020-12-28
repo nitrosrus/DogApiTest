@@ -12,6 +12,12 @@ import com.example.dogapitest.R
 
 class SharePhoto() : AppCompatDialogFragment() {
 
+    companion object {
+        fun newInstance(): SharePhoto {
+            val dialogFragment = SharePhoto()
+            return dialogFragment
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = activity
@@ -29,12 +35,7 @@ class SharePhoto() : AppCompatDialogFragment() {
         return builder.create()
     }
 
-    companion object {
-        fun newInstance(): SharePhoto {
-            val dialogFragment = SharePhoto()
-            return dialogFragment
-        }
-    }
+
 
 
 }

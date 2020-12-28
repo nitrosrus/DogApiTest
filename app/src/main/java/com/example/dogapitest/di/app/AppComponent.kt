@@ -17,7 +17,8 @@ import javax.inject.Singleton
         CiceroneModule::class,
         ApiModule::class,
         ImageModule::class,
-        DatabaseModule::class
+        DatabaseModule::class,
+        RxModule::class
 
     ]
 )

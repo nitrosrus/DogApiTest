@@ -7,17 +7,19 @@ import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.navigation.Screens
-import io.reactivex.disposables.Disposable
-import io.reactivex.rxjava3.core.Scheduler
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.example.dogapitest.rx.IRxProvider
+import com.example.dogapitest.ui.network.NetworkStatus
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @InjectViewState
-class BreedsPresenter(private val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsView>() {
+class BreedsPresenter() : MvpPresenter<BreedsView>() {
 
 
     @Inject
@@ -26,7 +28,14 @@ class BreedsPresenter(private val mainThreadScheduler: Scheduler) : MvpPresenter
     @Inject
     lateinit var apiBreeds: DogApiBreeds
 
+    @Inject
+    lateinit var rxProvider: IRxProvider
+
+    @Inject
+    lateinit var networkStatus: NetworkStatus
+
     val breedsListPresenter = BreedsListPresenter()
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     class BreedsListPresenter() : IBreedsListPresenter {
 
@@ -53,32 +62,55 @@ class BreedsPresenter(private val mainThreadScheduler: Scheduler) : MvpPresenter
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadData()
+        checkInternet()
         breedsListPresenter.itemClickListener = { index ->
             itemClick(index)
         }
+
+    }
+
+    override fun detachView(view: BreedsView?) {
+        clearRx()
+        super.detachView(view)
+    }
+
+    private fun checkInternet() {
+        if (networkStatus.isOnline() == true) loadData() else viewState.serverErrorInternet()
+    }
+
+    fun awaitNetworkStatus() {
+        clearRx()
+        compositeDisposable.add(
+            networkStatus.isOnlineObserver()
+                .subscribe { online -> if (online) loadData()  }
+        )
     }
 
 
     private fun loadData() {
-        apiBreeds.getBreeds()
-            .subscribeOn(Schedulers.io())
-            .observeOn(mainThreadScheduler)
-            .subscribe({ breeds ->
-                convertData(breeds)
-            }, {
-                Timber.e(it)
-                viewState.serverErrorInternet()
-
-            })
-
+        clearRx()
+        compositeDisposable.add(
+            apiBreeds.getBreeds()
+                .subscribeOn(rxProvider.ioThread())
+                .observeOn(rxProvider.uiMainThread())
+                .subscribe({ breeds ->
+                    convertData(breeds)
+                }, {
+                    Timber.e(it)
+                    checkInternet()
+                })
+        )
     }
 
+
     private fun convertData(breeds: BreedsList) {
+
+
         breedsListPresenter.breedsData.clear()
         breeds.message.forEach { entry ->
             breedsListPresenter.breedsData[entry.key] = entry.value.size
         }
+
         updateData()
     }
 
@@ -94,6 +126,7 @@ class BreedsPresenter(private val mainThreadScheduler: Scheduler) : MvpPresenter
 
     private fun updateData() = viewState.updateRVAdapter()
 
+    private fun clearRx()=compositeDisposable.clear()
 
     fun backClicked(): Boolean {
         router.exit()

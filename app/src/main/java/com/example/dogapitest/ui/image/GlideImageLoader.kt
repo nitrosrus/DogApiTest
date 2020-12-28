@@ -22,7 +22,7 @@ class GlideImageLoader(override val cache: IImageCache, val networkStatus: Netwo
     override fun loadInto(url: String, container: ImageView, preload: ImageView) {
         Timber.d("Loading Image $url ")
 
-        networkStatus.isOnline().observeOn(AndroidSchedulers.mainThread())
+        networkStatus.isOnlineSingle().observeOn(AndroidSchedulers.mainThread())
             .subscribe { isOnLine ->
                 if (isOnLine) {
                     Glide.with(preload.context).load(R.raw.load).into(preload)

@@ -15,7 +15,6 @@ import com.example.dogapitest.mvp.presenter.BreedsPresenter
 import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.ui.adapter.BreedsRVAdapter
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -37,7 +36,6 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
     private val binding get() = _binding!!
 
     private val breedsComponent = App.instance.breedsComponent
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +63,7 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
 
 
     @ProvidePresenter
-    fun providePresenter() = BreedsPresenter(AndroidSchedulers.mainThread()).apply {
+    fun providePresenter() = BreedsPresenter().apply {
         breedsComponent.inject(this)
     }
 
@@ -79,15 +77,21 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
 
     override fun updateRVAdapter() {
         adapter?.notifyDataSetChanged()
+
     }
 
     override fun serverErrorInternet() {
         val builder = AlertDialog.Builder(requireContext())
         val dialogView = layoutInflater.inflate(R.layout.dialog_server_error, null)
         val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
         builder.setView(dialogView)
         val dialog = builder.create()
-        btnOk.setOnClickListener { dialog.dismiss() }
+        btnOk.setOnClickListener {
+            presenter.awaitNetworkStatus()
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
 
