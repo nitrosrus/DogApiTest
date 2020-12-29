@@ -35,6 +35,7 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
     lateinit var networkStatus: NetworkStatus
 
     val breedsListPresenter = BreedsListPresenter()
+
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     class BreedsListPresenter() : IBreedsListPresenter {
@@ -69,23 +70,9 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
 
     }
 
-    override fun detachView(view: BreedsView?) {
-        clearRx()
-        super.detachView(view)
-    }
-
     private fun checkInternet() {
         if (networkStatus.isOnline() == true) loadData() else viewState.serverErrorInternet()
     }
-
-    fun awaitNetworkStatus() {
-        clearRx()
-        compositeDisposable.add(
-            networkStatus.isOnlineObserver()
-                .subscribe { online -> if (online) loadData()  }
-        )
-    }
-
 
     private fun loadData() {
         clearRx()
@@ -102,16 +89,24 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
         )
     }
 
-
     private fun convertData(breeds: BreedsList) {
-
-
         breedsListPresenter.breedsData.clear()
-        breeds.message.forEach { entry ->
-            breedsListPresenter.breedsData[entry.key] = entry.value.size
+        breeds.message.forEach { entryMap ->
+            breedsListPresenter.breedsData[entryMap.key] = entryMap.value.size
         }
 
         updateData()
+
+    }
+
+    private fun updateData() = viewState.updateRVAdapter()
+
+    fun awaitNetworkStatus() {
+        clearRx()
+        compositeDisposable.add(
+            networkStatus.isOnlineObserver()
+                .subscribe { online -> if (online) loadData() }
+        )
     }
 
     private fun itemClick(index: Int) {
@@ -120,13 +115,17 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
         } else {
             router.navigateTo(Screens.ImageScreen(getBreedByIndex(index), null))
         }
+
     }
 
     private fun getBreedByIndex(index: Int) = breedsListPresenter.breedsData.keys.elementAt(index)
 
-    private fun updateData() = viewState.updateRVAdapter()
+    override fun detachView(view: BreedsView?) {
+        clearRx()
+        super.detachView(view)
+    }
 
-    private fun clearRx()=compositeDisposable.clear()
+    private fun clearRx() = compositeDisposable.clear()
 
     fun backClicked(): Boolean {
         router.exit()
