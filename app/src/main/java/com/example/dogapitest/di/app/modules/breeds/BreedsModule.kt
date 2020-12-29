@@ -15,8 +15,8 @@ open class BreedsModule {
 
     @BreedsScope
     @Provides
-    open fun breedsRepo(api: IDataSource, networkStatus: NetworkStatus): DogApiBreeds {
-        return DogApiBreeds(api, networkStatus)
+    open fun breedsRepo(api: IDataSource): DogApiBreeds {
+        return DogApiBreeds(api)
     }
 
     @BreedsScope

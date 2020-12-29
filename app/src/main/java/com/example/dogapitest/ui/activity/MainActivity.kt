@@ -8,7 +8,6 @@ import com.example.dogapitest.databinding.ActivityMainBinding
 import com.example.dogapitest.mvp.presenter.MainPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.MainView
-import com.example.dogapitest.ui.network.SharePhoto
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter

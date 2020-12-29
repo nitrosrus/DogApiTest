@@ -18,7 +18,8 @@ import javax.inject.Singleton
         ApiModule::class,
         ImageModule::class,
         DatabaseModule::class,
-        RxModule::class
+        RxModule::class,
+        DialogModule::class
 
     ]
 )

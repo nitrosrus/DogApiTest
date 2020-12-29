@@ -14,7 +14,6 @@ import com.example.dogapitest.mvp.presenter.LikeImagePresenter
 import com.example.dogapitest.mvp.view.BreedsImageView
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.ui.adapter.ImageRVAdapter
-import com.example.dogapitest.ui.network.ServerErrorInternet
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
@@ -94,11 +93,11 @@ class LikeImageFragment : MvpAppCompatFragment(R.layout.like_image_fragment), Br
     }
 
     override fun serverErrorInternet() {
-        fragmentManager?.let {
-            ServerErrorInternet.newInstance().show(
-                it, SubBreedsFragment.DIALOG_FRAGMENT_TAG
-            )
-        }
+//        fragmentManager?.let {
+//            ShowAlertDialog.newInstance().show(
+//                it, SubBreedsFragment.DIALOG_FRAGMENT_TAG
+//            )
+//        }
     }
 
 

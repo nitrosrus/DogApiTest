@@ -9,22 +9,20 @@ import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
 import com.example.dogapitest.databinding.SubBreedFragmentBinding
-import com.example.dogapitest.ui.network.ServerErrorInternet
 import com.example.dogapitest.mvp.presenter.SubBreedsPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.SubBreedsView
-import com.example.dogapitest.ui.adapter.BreedsRVAdapter
 import com.example.dogapitest.ui.adapter.SubBreedsRVAdapter
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import com.example.dogapitest.ui.dialog.IShowAlertDialog
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import javax.inject.Inject
 
 class SubBreedsFragment : MvpAppCompatFragment(R.layout.sub_breed_fragment), SubBreedsView,
     BackButtonListener {
 
     companion object {
-        const val DIALOG_FRAGMENT_TAG = "SubBreedsFragment"
         const val SUBBREEDS_KEY = "subbreeds"
         fun newInstance(subBreeds: String) = SubBreedsFragment().apply {
             arguments = Bundle().apply {
@@ -34,11 +32,13 @@ class SubBreedsFragment : MvpAppCompatFragment(R.layout.sub_breed_fragment), Sub
 
     }
 
-
-    var adapter: SubBreedsRVAdapter? = null
-
     @InjectPresenter
     lateinit var presenter: SubBreedsPresenter
+
+    @Inject
+    lateinit var dialog: IShowAlertDialog
+
+    var adapter: SubBreedsRVAdapter? = null
 
     private var _binding: SubBreedFragmentBinding? = null
 
@@ -52,35 +52,34 @@ class SubBreedsFragment : MvpAppCompatFragment(R.layout.sub_breed_fragment), Sub
         _binding = SubBreedFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        breedsComponent.inject(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        screenSetting()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        (activity as DpVisible).setSubBreedScreenSetting(arguments?.get(SUBBREEDS_KEY).toString())
-
-    }
 
     @ProvidePresenter
     fun providePresenter() =
-        SubBreedsPresenter(
-            AndroidSchedulers.mainThread(),
-            arguments!![SUBBREEDS_KEY] as String
-        ).apply {
-            breedsComponent.inject(this)
-        }
+        SubBreedsPresenter(arguments!![SUBBREEDS_KEY] as String)
+            .apply { breedsComponent.inject(this) }
 
-
-    override fun backClicked() = presenter.backClicked()
 
     override fun init() {
         binding.rvBreeds.layoutManager = LinearLayoutManager(context)
-        adapter = SubBreedsRVAdapter(presenter.subBreedsListPresenter).apply {
-            breedsComponent.inject(this)
-        }
+        adapter = SubBreedsRVAdapter(presenter.subBreedsListPresenter)
+            .apply { breedsComponent.inject(this) }
         binding.rvBreeds.adapter = adapter
-
+        dialog.clickListener = { presenter.awaitNetworkStatus() }
 
     }
 
@@ -89,22 +88,16 @@ class SubBreedsFragment : MvpAppCompatFragment(R.layout.sub_breed_fragment), Sub
         adapter?.notifyDataSetChanged()
     }
 
-    override fun setTitle(text: String) {
-
-
-    }
-
 
     override fun serverErrorInternet() {
-
-        fragmentManager?.let {
-            ServerErrorInternet.newInstance().show(
-                it, DIALOG_FRAGMENT_TAG
-            )
-        }
-
+        dialog.getAlertInternet(requireContext()).show()
     }
 
+    private fun screenSetting() {
+        (activity as? DpVisible)?.setSubBreedScreenSetting(arguments?.get(SUBBREEDS_KEY).toString())
+    }
+
+    override fun backClicked() = presenter.backClicked()
 }
 
 

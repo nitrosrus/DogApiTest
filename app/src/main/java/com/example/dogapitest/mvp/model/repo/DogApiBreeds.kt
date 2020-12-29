@@ -7,14 +7,9 @@ import com.example.dogapitest.ui.network.NetworkStatus
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class DogApiBreeds(
-    val api: IDataSource, val networkStatus: NetworkStatus
-) {
-    // fun getBreeds(): Single<BreedsList> = api.getBreeds()
+class DogApiBreeds(val api: IDataSource) {
 
     fun getBreeds(): Single<BreedsList> = api.getBreeds()
 
-
-    fun getSubBreeds(breed: String): Single<SubBreedsList> =
-        api.getSubBreeds(breed).subscribeOn(Schedulers.io())
+    fun getSubBreeds(breed: String): Single<SubBreedsList> = api.getSubBreeds(breed)
 }

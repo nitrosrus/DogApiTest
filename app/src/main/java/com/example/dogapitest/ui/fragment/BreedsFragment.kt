@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
@@ -15,9 +13,11 @@ import com.example.dogapitest.mvp.presenter.BreedsPresenter
 import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.ui.adapter.BreedsRVAdapter
+import com.example.dogapitest.ui.dialog.IShowAlertDialog
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import javax.inject.Inject
 
 class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
     BreedsView, BackButtonListener {
@@ -30,7 +30,11 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
     @InjectPresenter
     lateinit var presenter: BreedsPresenter
 
+    @Inject
+    lateinit var dialog: IShowAlertDialog
+
     private var adapter: BreedsRVAdapter? = null
+
     private var _binding: BreedsFragmentBinding? = null
 
     private val binding get() = _binding!!
@@ -57,8 +61,10 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
     }
 
     override fun onDestroyView() {
+        println("qwerty onDestroyView ")
         super.onDestroyView()
         _binding = null
+        println("qwerty onDestroyView  bee")
     }
 
 
@@ -68,31 +74,21 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
     }
 
     override fun init() {
-        binding.rvBreeds.layoutManager = LinearLayoutManager(context)
-        adapter = BreedsRVAdapter(presenter.breedsListPresenter, requireContext())
+        binding.rvBreeds.layoutManager = LinearLayoutManager(requireContext())
+        adapter = BreedsRVAdapter(presenter.breedsListPresenter)
             .apply { breedsComponent.inject(this) }
         binding.rvBreeds.adapter = adapter
+        dialog.clickListener = { presenter.awaitNetworkStatus() }
     }
 
 
     override fun updateRVAdapter() {
         adapter?.notifyDataSetChanged()
-
     }
 
     override fun serverErrorInternet() {
-        val builder = AlertDialog.Builder(requireContext())
-        val dialogView = layoutInflater.inflate(R.layout.dialog_server_error, null)
-        val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
-        val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        btnOk.setOnClickListener {
-            presenter.awaitNetworkStatus()
-            dialog.dismiss()
-        }
-        btnCancel.setOnClickListener { dialog.dismiss() }
-        dialog.show()
+        dialog.getAlertInternet(requireContext()).show()
+
     }
 
     private fun screenSetting() {

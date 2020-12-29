@@ -1,6 +1,5 @@
 package com.example.dogapitest.ui.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +10,15 @@ import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.view.list.BreedsItemView
 
 
-class BreedsRVAdapter(val presenter: IBreedsListPresenter, val context: Context) :
+class BreedsRVAdapter(val presenter: IBreedsListPresenter) :
     RecyclerView.Adapter<BreedsRVAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return ViewHolder(
-            view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.test_item_breeds, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_breeds, parent, false)
         )
     }
 
