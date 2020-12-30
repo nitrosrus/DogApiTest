@@ -14,13 +14,9 @@ class BreedsRVAdapter(val presenter: IBreedsListPresenter) :
     RecyclerView.Adapter<BreedsRVAdapter.ViewHolder>() {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_breeds, parent, false)
-        )
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_breeds, parent, false)
+    )
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -31,8 +27,7 @@ class BreedsRVAdapter(val presenter: IBreedsListPresenter) :
     override fun getItemCount() = presenter.getCount()
 
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
-        BreedsItemView {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), BreedsItemView {
 
         private val tvBreed: TextView = view.findViewById(R.id.tv_breeds)
         private val tvCountBreed: TextView = view.findViewById(R.id.tv_count_breeds)
@@ -61,6 +56,5 @@ class BreedsRVAdapter(val presenter: IBreedsListPresenter) :
         }
 
     }
-
 
 }

@@ -3,10 +3,8 @@ package com.example.dogapitest.mvp.presenter
 
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.presenter.list.IFavouritesBreedsListPresenter
-import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.FavouritesBreedsView
 import com.example.dogapitest.mvp.view.list.FavouritesBreedsItemView
-import com.example.dogapitest.mvp.view.list.LikeImageItemView
 import com.example.dogapitest.navigation.Screens
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.InjectViewState
