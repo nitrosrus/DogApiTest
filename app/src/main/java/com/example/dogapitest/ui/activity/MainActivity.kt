@@ -80,7 +80,7 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpV
     }
 
     private fun sharePhotoClick() {
-        SharePhoto.newInstance().show(supportFragmentManager, MAIN_ACTIVITY)
+        //SharePhoto.newInstance().show(supportFragmentManager, MAIN_ACTIVITY)
     }
 
 
