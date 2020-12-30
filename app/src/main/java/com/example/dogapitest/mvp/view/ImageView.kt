@@ -5,10 +5,9 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface BreedsImageView : MvpView {
+interface ImageView : MvpView {
     fun init()
     fun updateRVAdapter()
-    fun loadImage(url: String)
     fun serverErrorInternet()
 
 }

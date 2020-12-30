@@ -1,15 +1,18 @@
 package com.example.dogapitest.mvp.presenter
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
-import com.example.dogapitest.mvp.presenter.list.ILikeImageListPresenter
-import com.example.dogapitest.mvp.view.BreedsImageView
-import com.example.dogapitest.mvp.view.list.ImageItemView
-import com.example.dogapitest.mvp.view.list.LikeImageItemView
+import com.example.dogapitest.mvp.presenter.list.IFavouritesImageListPresenter
+import com.example.dogapitest.mvp.view.FavouritesImageView
+
+import com.example.dogapitest.mvp.view.ImageView
+import com.example.dogapitest.mvp.view.list.FavouritesImageItemView
+
+import com.example.dogapitest.rx.IRxProvider
+import com.example.dogapitest.ui.network.NetworkStatus
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Scheduler
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -17,8 +20,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: String) :
-    MvpPresenter<BreedsImageView>() {
+class FavouritesImagePresenter(val breedsName: String) :
+    MvpPresenter<FavouritesImageView>() {
 
     @Inject
     lateinit var router: Router
@@ -26,23 +29,26 @@ class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: Str
     @Inject
     lateinit var database: IBreedsCache
 
+    @Inject
+    lateinit var rxProvider: IRxProvider
+
+    @Inject
+    lateinit var networkStatus: NetworkStatus
+
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     private var breedsLikeStatus = mutableMapOf<String, List<String>>()
 
     val imageListPresenter = ImageListPresenter()
 
-    inner class ImageListPresenter : IImageListPresenter {
-        var image = listOf<String>()
-        override var itemClickListener: ((ImageItemView) -> Unit)? = null
-        override fun getCount() = image.size
-        override fun bindView(view: ImageItemView) {
-            val url = image[view.pos]
+    inner class ImageListPresenter : IFavouritesImageListPresenter {
+        var imageData = listOf<String>()
+        override var itemClickListener: ((FavouritesImageItemView) -> Unit)? = null
+        override fun getCount() = imageData.size
+        override fun bind(view: FavouritesImageItemView) {
+            val url = imageData[view.pos]
             view.loadImage(url)
             view.setlike(checkLikeBase(url))
-        }
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun likeBTN(view: ImageItemView) {
-            view.setlike(logicCheckLike(view))
         }
 
     }
@@ -63,16 +69,18 @@ class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: Str
         return false
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun logicCheckLike(view: ImageItemView): Boolean {
-        val url = imageListPresenter.image[view.pos]
+
+    fun logicCheckLike(view: FavouritesImageItemView): Boolean {
+        val url = imageListPresenter.imageData[view.pos]
         val newUrl = listOf(url)
 
         return if (checkLikeBase(url)) {
 
             if (breedsLikeStatus[breedsName]?.size == 1)
-                breedsLikeStatus.remove(breedsName, newUrl) else breedsLikeStatus.values.remove(newUrl)
-            database.putDisLike(breedsName,url).observeOn(mainThreadScheduler).subscribe()
+                breedsLikeStatus.remove(breedsName, newUrl) else breedsLikeStatus.values.remove(
+                newUrl
+            )
+            database.putDisLike(breedsName, url).observeOn(rxProvider.uiMainThread()).subscribe()
             false
 
         } else {
@@ -85,14 +93,14 @@ class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: Str
     }
 
     fun putLike(pos: Int) {
-        database.putLikeImage(breedsName, imageListPresenter.image[pos])
+        database.putLikeImage(breedsName, imageListPresenter.imageData[pos])
             .observeOn(AndroidSchedulers.mainThread()).subscribe()
 
     }
 
     fun loadDataBase() {
 
-        database.getAllLike().observeOn(mainThreadScheduler).subscribe({ list ->
+        database.getAllLike().observeOn(rxProvider.uiMainThread()).subscribe({ list ->
             breedsLikeStatus.clear()
             breedsLikeStatus.putAll(list)
             loadData()
@@ -102,7 +110,7 @@ class LikeImagePresenter(val mainThreadScheduler: Scheduler, val breedsName: Str
     }
 
     fun loadData() {
-        imageListPresenter.image = breedsLikeStatus[breedsName]!!
+        imageListPresenter.imageData = breedsLikeStatus[breedsName]!!
         viewState.updateRVAdapter()
     }
 

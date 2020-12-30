@@ -8,19 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dogapitest.R
 import com.example.dogapitest.databinding.ItemImageBinding
 import com.example.dogapitest.mvp.model.image.IImageLoader
-import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
-import com.example.dogapitest.mvp.presenter.list.ILikeImageListPresenter
-import com.example.dogapitest.mvp.view.list.ImageItemView
-import com.example.dogapitest.mvp.view.list.LikeImageItemView
+import com.example.dogapitest.mvp.presenter.list.IFavouritesImageListPresenter
+import com.example.dogapitest.mvp.view.list.FavouritesImageItemView
 
 import javax.inject.Inject
 
-class LikeImageRVAdapter(val presenter: ILikeImageListPresenter) :
-    RecyclerView.Adapter<LikeImageRVAdapter.ViewHolder>() {
+class FavouritesImageRVAdapter(val presenter: IFavouritesImageListPresenter) :
+    RecyclerView.Adapter<FavouritesImageRVAdapter.ViewHolder>() {
 
     @Inject
     lateinit var imageLoader: IImageLoader<ImageView>
     lateinit var binding: ItemImageBinding
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding.root)
@@ -30,10 +29,10 @@ class LikeImageRVAdapter(val presenter: ILikeImageListPresenter) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.pos = position
         holder.containerView.setOnClickListener { presenter.itemClickListener?.invoke(holder) }
-        binding.btnLike.setOnClickListener { presenter.likeBTN(holder) }
+        //binding.btnLike.setOnClickListener { presenter.likeBTN(holder) }
 
         //holder.containerView.btn_like.setOnClickListener { presenter.likeBTN(holder) }
-        presenter.bindView(holder)
+        //presenter.bindView(holder)
     }
 
     override fun getItemCount() = presenter.getCount()
@@ -41,7 +40,7 @@ class LikeImageRVAdapter(val presenter: ILikeImageListPresenter) :
 
     inner class ViewHolder(val containerView: View) :
         RecyclerView.ViewHolder(containerView),
-        LikeImageItemView {
+        FavouritesImageItemView {
         override var pos = -1
         override fun setlike(boolean: Boolean) = with(containerView) {
             if (boolean) {
