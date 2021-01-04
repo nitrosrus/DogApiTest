@@ -5,7 +5,6 @@ import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.presenter.list.IFavouritesImageListPresenter
 import com.example.dogapitest.mvp.view.FavouritesImageView
 
-import com.example.dogapitest.mvp.view.ImageView
 import com.example.dogapitest.mvp.view.list.FavouritesImageItemView
 
 import com.example.dogapitest.rx.IRxProvider
