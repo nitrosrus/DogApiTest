@@ -52,7 +52,7 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
         }
 
         override fun setClickListener() {
-            btnLike.setOnClickListener { presenter.itemClickListener?.invoke(this) }
+            btnLike.setOnClickListener { presenter.itemClickListener?.invoke(pos) }
         }
     }
 }

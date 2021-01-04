@@ -46,7 +46,7 @@ class ImagePresenter(
 
     inner class ImageListPresenter : IImageListPresenter {
         val imageData = mutableListOf<String>()
-        override var itemClickListener: ((ImageItemView) -> Unit)? = null
+        override var itemClickListener: ((Int) -> Unit)? = null
         override fun getCount() = imageData.size
         override fun bind(view: ImageItemView) {
             val url = imageData[view.pos]
@@ -59,7 +59,7 @@ class ImagePresenter(
         super.onFirstViewAttach()
         viewState.init()
         checkInternet()
-        imageListPresenter.itemClickListener = { view -> logicCheckLike(view) }
+        imageListPresenter.itemClickListener = { index -> logicCheckLike(index) }
     }
 
     private fun checkAndSetLikeDislike(url: String, view: ImageItemView) {
@@ -74,16 +74,23 @@ class ImagePresenter(
         return false
     }
 
-    private fun logicCheckLike(view: ImageItemView) {
-        val url = imageListPresenter.imageData[view.pos]
+    private fun logicCheckLike(index: Int) {
+        println("qwerty logic 1 ")
+        val url = imageListPresenter.imageData[index]
         if (checkLikeInBase(url)) {
-            view.setLikeDisable()
+            println("qwerty logic 2 ")
+           // view.setLikeDisable()
             breedsLikeStatus.remove(key = name, value = listOf(url))
+            updateData()
             putDisLike(url)
+            println("qwerty logic 3 ")
         } else {
-            view.setLikeEnable()
+            println("qwerty logic 4 ")
+           // view.setLikeEnable()
             breedsLikeStatus.put(key = name, value = listOf(url))
+            updateData()
             putLike(url)
+            println("qwerty logic 5")
         }
     }
 
