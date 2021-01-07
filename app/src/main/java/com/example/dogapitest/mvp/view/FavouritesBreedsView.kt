@@ -8,6 +8,4 @@ import moxy.viewstate.strategy.StateStrategyType
 interface FavouritesBreedsView : MvpView {
     fun init()
     fun updateRVAdapter()
-    fun setTitle(text:String)
-     fun serverErrorInternet()
 }

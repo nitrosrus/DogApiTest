@@ -65,7 +65,6 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
         _binding = null
     }
 
-
     @ProvidePresenter
     fun providePresenter() = BreedsPresenter().apply {
         breedsComponent.inject(this)
@@ -79,14 +78,12 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
         dialog.clickListener = { presenter.awaitNetworkStatus() }
     }
 
-
     override fun updateRVAdapter() {
         adapter?.notifyDataSetChanged()
     }
 
     override fun serverErrorInternet() {
         dialog.getAlertInternet(requireContext()).show()
-
     }
 
     private fun screenSetting() {

@@ -86,9 +86,7 @@ class FavouritesImageFragment : MvpAppCompatFragment(R.layout.favourites_image_f
             iComponent.inject(this)
         }
         binding.rvImage.adapter = adapter
-
     }
-
 
     override fun updateRVAdapter() {
         adapter?.notifyDataSetChanged()
@@ -97,11 +95,10 @@ class FavouritesImageFragment : MvpAppCompatFragment(R.layout.favourites_image_f
 
     override fun serverErrorInternet() {
 
-
     }
 
     private fun screenSetting() {
-        (activity as DpVisible).setLikeImageScreenSetting(
+        (activity as DpVisible).setFavouritesImageScreenSetting(
             arguments?.get(IMAGEBREEDS_KEY).toString()
         )
     }

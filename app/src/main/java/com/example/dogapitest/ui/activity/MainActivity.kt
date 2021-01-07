@@ -28,7 +28,7 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpV
     @InjectPresenter
     lateinit var presenter: MainPresenter
 
-    private lateinit var binding: ActivityMainBinding
+     lateinit var binding: ActivityMainBinding
 
     lateinit var bottomBar: BottomNavigationView
 
@@ -163,7 +163,7 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpV
         //bab_nav.visibility = View.VISIBLE
     }
 
-    override fun setLikeImageScreenSetting(breed: String) {
+    override fun setFavouritesImageScreenSetting(breed: String) {
 //      customActionBarBinding.tvActionBack.visibility = View.VISIBLE
 //      customActionBarBinding.ivActionBack.visibility = View.VISIBLE
 //      customActionBarBinding.ivActionShare.visibility = View.VISIBLE

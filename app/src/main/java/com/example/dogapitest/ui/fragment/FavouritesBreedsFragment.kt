@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
@@ -15,26 +13,28 @@ import com.example.dogapitest.mvp.presenter.FavouritesBreedsPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.FavouritesBreedsView
 import com.example.dogapitest.ui.adapter.FavouritesBreedsRVAdapter
-import io.reactivex.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 
 class FavouritesBreedsFragment : MvpAppCompatFragment(R.layout.favourites_breeds_fragment),
-    FavouritesBreedsView,
-    BackButtonListener {
+    FavouritesBreedsView, BackButtonListener {
+
     companion object {
         fun newInstance() = FavouritesBreedsFragment()
     }
 
-    private var _binding: FavouritesBreedsFragmentBinding? = null
-    var adapter: FavouritesBreedsRVAdapter? = null
-    private val binding get() = _binding!!
-
     @InjectPresenter
     lateinit var presenter: FavouritesBreedsPresenter
 
+    private var adapter: FavouritesBreedsRVAdapter? = null
+
+    private var _binding: FavouritesBreedsFragmentBinding? = null
+
+    private val binding get() = _binding!!
+
     private val breedsComponent = App.instance.breedsComponent
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,23 +43,27 @@ class FavouritesBreedsFragment : MvpAppCompatFragment(R.layout.favourites_breeds
         _binding = FavouritesBreedsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        breedsComponent.inject(this)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        screenSetting()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        breedsComponent.inject(this)
-        (activity as DpVisible).setLikeBreedScreenSetting()
-    }
 
     @ProvidePresenter
-    fun providePresenter() = FavouritesBreedsPresenter(AndroidSchedulers.mainThread()).apply {
+    fun providePresenter() = FavouritesBreedsPresenter().apply {
         breedsComponent.inject(this)
     }
-
-    override fun backClicked() = presenter.backClicked()
-
 
     override fun init() {
         binding.rvBreeds.layoutManager = LinearLayoutManager(context)
@@ -73,25 +77,8 @@ class FavouritesBreedsFragment : MvpAppCompatFragment(R.layout.favourites_breeds
         adapter?.notifyDataSetChanged()
     }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.loadData()
+    private fun screenSetting() {
+        (activity as DpVisible).setLikeBreedScreenSetting()
     }
-
-    override fun setTitle(text: String) {
-
-        // tv_action_title.text = text
-    }
-
-    override fun serverErrorInternet() {
-        val builder = AlertDialog.Builder(requireContext())
-        val dialogView = layoutInflater.inflate(R.layout.dialog_server_error, null)
-        val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        btnOk.setOnClickListener { dialog.dismiss() }
-        dialog.show()
-    }
-
-
+    override fun backClicked() = presenter.backClicked()
 }

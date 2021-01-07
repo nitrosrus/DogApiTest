@@ -3,30 +3,26 @@ package com.example.dogapitest.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dogapitest.R
 import com.example.dogapitest.databinding.ItemBreedsBinding
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.presenter.list.IFavouritesBreedsListPresenter
-import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.mvp.view.list.FavouritesBreedsItemView
 
 
 class FavouritesBreedsRVAdapter(val presenter: IFavouritesBreedsListPresenter) :
     RecyclerView.Adapter<FavouritesBreedsRVAdapter.ViewHolder>() {
 
-    lateinit var binding: ItemBreedsBinding
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        binding = ItemBreedsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding.root)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_breeds, parent, false)
+    )
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.pos = position
-        presenter.bindView(holder)
-      //  binding.tvBreeds.setOnClickListener { presenter.itemClickListener?.invoke( ) }
+        presenter.bind(holder)
     }
 
     override fun getItemCount() = presenter.getCount()
@@ -35,34 +31,31 @@ class FavouritesBreedsRVAdapter(val presenter: IFavouritesBreedsListPresenter) :
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         FavouritesBreedsItemView {
 
+        private val tvBreed: TextView = view.findViewById(R.id.tv_breeds)
+        private val tvCountBreed: TextView = view.findViewById(R.id.tv_count_breeds)
+
         override var pos = -1
 
 
-        override fun setBreed(text: String)  {
-            binding.tvBreeds.text=text
-
+        override fun setBreed(breed: String) {
+            tvBreed.text = breed
         }
 
-        override fun setCountBreed(text: String)  {
-            binding.tvCountBreeds.text=text
-
-        }
-
-        override fun getBreads(): String  {
-            return binding.tvBreeds.text.toString()
-        }
-
-        override fun setCountVisible() {
-             binding.tvCountBreeds.visibility = View.VISIBLE
-        }
-
-        override fun setCountInvisible() {
-            binding.tvCountBreeds.visibility = View.INVISIBLE
+        override fun setCountBreed(countBreed: String) {
+            tvCountBreed.text = countBreed
         }
 
         override fun setClickListener() {
-            binding.tvBreeds.setOnClickListener { presenter.itemClick?.invoke(this@FavouritesBreedsRVAdapter.binding.tvBreeds.toString()) }
-           // itemView.tv_breeds.setOnClickListener {  }
+            itemView.setOnClickListener { presenter.itemClickListener?.invoke(pos) }
+        }
+
+
+        override fun setCountVisible() {
+            tvCountBreed.visibility = View.VISIBLE
+        }
+
+        override fun setCountInvisible() {
+            tvCountBreed.visibility = View.INVISIBLE
         }
 
     }

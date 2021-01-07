@@ -8,6 +8,6 @@ interface DpVisible {
     fun setFirstScreenSetting(firstScreen: Int)
     fun setSubBreedScreenSetting(breed: String)
     fun setLikeBreedScreenSetting()
-    fun setLikeImageScreenSetting(breed: String)
+    fun setFavouritesImageScreenSetting(breed: String)
 
 }

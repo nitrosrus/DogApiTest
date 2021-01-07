@@ -3,14 +3,13 @@ package com.example.dogapitest.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogapitest.R
-import com.example.dogapitest.databinding.ItemImageBinding
 import com.example.dogapitest.mvp.model.image.IImageLoader
 import com.example.dogapitest.mvp.presenter.list.IFavouritesImageListPresenter
 import com.example.dogapitest.mvp.view.list.FavouritesImageItemView
-
 import javax.inject.Inject
 
 class FavouritesImageRVAdapter(val presenter: IFavouritesImageListPresenter) :
@@ -18,59 +17,41 @@ class FavouritesImageRVAdapter(val presenter: IFavouritesImageListPresenter) :
 
     @Inject
     lateinit var imageLoader: IImageLoader<ImageView>
-    lateinit var binding: ItemImageBinding
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding.root)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
+    )
 
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FavouritesImageRVAdapter.ViewHolder, position: Int) {
         holder.pos = position
-        holder.containerView.setOnClickListener { presenter.itemClickListener?.invoke(holder) }
-        //binding.btnLike.setOnClickListener { presenter.likeBTN(holder) }
+        presenter.bind(holder)
 
-        //holder.containerView.btn_like.setOnClickListener { presenter.likeBTN(holder) }
-        //presenter.bindView(holder)
     }
 
     override fun getItemCount() = presenter.getCount()
 
 
-    inner class ViewHolder(val containerView: View) :
-        RecyclerView.ViewHolder(containerView),
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view),
         FavouritesImageItemView {
+
+        private val btnLike: ImageButton = view.findViewById(R.id.btn_like)
+        private val ivImageBreed: ImageView = view.findViewById(R.id.iv_imageBreed)
+        private val ivImageLoader: ImageView = view.findViewById(R.id.iv_loadImage)
+
         override var pos = -1
-        override fun setlike(boolean: Boolean) = with(containerView) {
-            if (boolean) {
-                binding.btnLike.setImageResource(R.drawable.ic_heart_font)
-            } else {
-                binding.btnLike.setImageResource(R.drawable.ic_heart)
-            }
+
+        override fun loadImage(url: String) {
+            imageLoader.loadInto(url, ivImageBreed, ivImageLoader)
         }
 
-        override fun loadImage(url: String) = with(containerView) {
-            imageLoader.loadInto(url, binding.ivImageBreed, binding.ivLoadImage)
+        override fun setLikeEnable() {
+            btnLike.setImageResource(R.drawable.ic_heart_font)
         }
 
-        override fun setBreed(breeds: String) {
-            TODO("Not yet implemented")
+        override fun setClickListener() {
+            btnLike.setOnClickListener { presenter.itemClickListener?.invoke(pos) }
         }
 
-        override fun setCountBreed(countBreeds: String) {
-            TODO("Not yet implemented")
-        }
-
-        override fun getBreads(): String {
-            TODO("Not yet implemented")
-        }
-
-
-    }
-
-    interface OnListItemClickListener {
-        fun onItemClick()
     }
 
 }

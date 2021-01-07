@@ -2,15 +2,12 @@ package com.example.dogapitest.mvp.presenter
 
 
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
+import com.example.dogapitest.mvp.model.entity.room.db.RoomCacheLike
 import com.example.dogapitest.mvp.presenter.list.IFavouritesImageListPresenter
 import com.example.dogapitest.mvp.view.FavouritesImageView
-
 import com.example.dogapitest.mvp.view.list.FavouritesImageItemView
-
 import com.example.dogapitest.rx.IRxProvider
 import com.example.dogapitest.ui.network.NetworkStatus
-import io.reactivex.android.schedulers.AndroidSchedulers
-
 import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
@@ -19,7 +16,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class FavouritesImagePresenter(val breedsName: String) :
+class FavouritesImagePresenter(val breed: String) :
     MvpPresenter<FavouritesImageView>() {
 
     @Inject
@@ -36,18 +33,18 @@ class FavouritesImagePresenter(val breedsName: String) :
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private var breedsLikeStatus = mutableMapOf<String, List<String>>()
-
     val imageListPresenter = ImageListPresenter()
 
     inner class ImageListPresenter : IFavouritesImageListPresenter {
-        var imageData = listOf<String>()
-        override var itemClickListener: ((FavouritesImageItemView) -> Unit)? = null
+        var imageData = mutableListOf<String>()
+        override var itemClickListener: ((Int) -> Unit)? = null
         override fun getCount() = imageData.size
         override fun bind(view: FavouritesImageItemView) {
             val url = imageData[view.pos]
+            println("qwerty " + url)
             view.loadImage(url)
-            view.setlike(checkLikeBase(url))
+            view.setLikeEnable()
+            view.setClickListener()
         }
 
     }
@@ -56,69 +53,65 @@ class FavouritesImagePresenter(val breedsName: String) :
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadDataBase()
-
+        loadRoomDataBase()
+        imageListPresenter.itemClickListener = { index -> logicUnCheckFavourite(index) }
     }
 
-
-    fun checkLikeBase(url: String): Boolean {
-        breedsLikeStatus.values.forEach {
-            if (it.contains(url)) return true
-        }
-        return false
-    }
-
-
-    fun logicCheckLike(view: FavouritesImageItemView): Boolean {
-        val url = imageListPresenter.imageData[view.pos]
-        val newUrl = listOf(url)
-
-        return if (checkLikeBase(url)) {
-
-            if (breedsLikeStatus[breedsName]?.size == 1)
-                breedsLikeStatus.remove(breedsName, newUrl) else breedsLikeStatus.values.remove(
-                newUrl
-            )
-            database.putDisLike(breedsName, url).observeOn(rxProvider.uiMainThread()).subscribe()
-            false
-
+    private fun logicUnCheckFavourite(index: Int) {
+        if (imageListPresenter.imageData.size != 1) {
+            putDisLike(imageListPresenter.imageData[index])
+            imageListPresenter.imageData.removeAt(index)
+            updateData()
         } else {
-
-
-            breedsLikeStatus.put(breedsName, newUrl)
-            putLike(view.pos)
-            true
+            removeLastIndex(index)
         }
-    }
-
-    fun putLike(pos: Int) {
-        database.putLikeImage(breedsName, imageListPresenter.imageData[pos])
-            .observeOn(AndroidSchedulers.mainThread()).subscribe()
 
     }
 
-    fun loadDataBase() {
-
-//        database.getAllLike().observeOn(rxProvider.uiMainThread()).subscribe({ list ->
-//            breedsLikeStatus.clear()
-//            breedsLikeStatus.putAll(list)
-//            loadData()
-//        }, {
-//            Timber.e(it)
-//        })
+    private fun removeLastIndex(index: Int) {
+        putDisLike(imageListPresenter.imageData[index])
+        imageListPresenter.imageData.removeAt(index)
+        updateData()
+        backClicked()
     }
 
-    fun loadData() {
-        imageListPresenter.imageData = breedsLikeStatus[breedsName]!!
-        viewState.updateRVAdapter()
+    fun loadRoomDataBase() {
+        database.getAllData().subscribeOn(rxProvider.ioThread())
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ list ->
+                convertData(list)
+            }, {
+                Timber.e(it)
+            }).let { compositeDisposable.add(it) }
     }
 
+    fun convertData(list: List<RoomCacheLike>) {
+        imageListPresenter.imageData.clear()
+        list.forEach {
+            if (it.breedName == breed) imageListPresenter.imageData.add(it.url)
+        }
+        updateData()
+    }
+
+    private fun putDisLike(url: String) {
+        database.putDisLike(breed, url).observeOn(rxProvider.uiMainThread()).subscribe()
+            .let { compositeDisposable.add(it) }
+
+    }
+
+    private fun updateData() = viewState.updateRVAdapter()
+
+    private fun clearRx() = compositeDisposable.clear()
+
+    override fun detachView(view: FavouritesImageView?) {
+        clearRx()
+        super.detachView(view)
+    }
 
     fun backClicked(): Boolean {
         router.exit()
         return true
     }
-
 
 }
 

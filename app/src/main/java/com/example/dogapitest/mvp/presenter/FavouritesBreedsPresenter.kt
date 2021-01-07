@@ -2,11 +2,13 @@ package com.example.dogapitest.mvp.presenter
 
 
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
+import com.example.dogapitest.mvp.model.entity.room.db.RoomCacheLike
 import com.example.dogapitest.mvp.presenter.list.IFavouritesBreedsListPresenter
 import com.example.dogapitest.mvp.view.FavouritesBreedsView
 import com.example.dogapitest.mvp.view.list.FavouritesBreedsItemView
 import com.example.dogapitest.navigation.Screens
-import io.reactivex.Scheduler
+import com.example.dogapitest.rx.IRxProvider
+import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -14,56 +16,83 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class FavouritesBreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<FavouritesBreedsView>() {
+class FavouritesBreedsPresenter() : MvpPresenter<FavouritesBreedsView>() {
 
+    @Inject
+     lateinit var router: Router
 
-    inner class BreedsListPresenter : IFavouritesBreedsListPresenter {
-        override var itemClick: ((String) -> Unit)?=null
-        val breeds = mutableMapOf<String, List<String>>()
-        override var itemClickListener: ((FavouritesBreedsItemView) -> Unit)? = null
-        override fun getCount() = breeds.size
-        override fun bindView(view: FavouritesBreedsItemView) {
-            listBreeds(view)
+    @Inject
+     lateinit var database: IBreedsCache
+
+    @Inject
+    lateinit var rxProvider: IRxProvider
+
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    val breedsListPresenter = BreedsListPresenter()
+
+    class BreedsListPresenter : IFavouritesBreedsListPresenter {
+
+        val breedsData = mutableMapOf<String, Int>()
+        override var itemClickListener: ((Int) -> Unit)? = null
+        override fun getCount() = breedsData.size
+        override fun bind(view: FavouritesBreedsItemView) {
+            view.setClickListener()
+            view.setBreed(breedsData.keys.elementAt(view.pos))
+            setCountChecker(view)
         }
 
-        fun listBreeds(view: FavouritesBreedsItemView) {
-            view.setBreed(breeds.keys.elementAt(view.pos))
-            if (breeds.values.size > 0) view.setCountBreed(breeds.values.elementAt(view.pos).size.toString())
+        private fun setCountChecker(view: FavouritesBreedsItemView) {
+            if (breedsData.values.elementAt(view.pos) != 0) {
+                view.setCountVisible()
+                view.setCountBreed(breedsData.values.elementAt(view.pos).toString())
+            } else view.setCountInvisible()
         }
 
     }
-
-    @Inject
-    lateinit var router: Router
-
-    @Inject
-    lateinit var database: IBreedsCache
-
-    val breedsListPresenter = BreedsListPresenter()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadData()
-        breedsListPresenter.itemClickListener = { view ->
-            router.navigateTo(Screens.LikeImageScreen(view.getBreads()))
-
+        loadRoomDataBase()
+        breedsListPresenter.itemClickListener = {
+            itemClick(it)
         }
     }
 
-
-    fun loadData() {
-
-//        database.getAllLike().observeOn(mainThreadScheduler).subscribe({ breeds ->
-//            breedsListPresenter.breeds.clear()
-//            breedsListPresenter.breeds.putAll(breeds)
-//            viewState.updateRVAdapter()
-//        }, {
-//            Timber.e(it)
-//        })
-
+    private fun itemClick(index: Int) {
+        router.navigateTo(Screens.LikeImageScreen(getBreedByIndex(index)))
     }
 
+    private fun getBreedByIndex(index: Int) = breedsListPresenter.breedsData.keys.elementAt(index)
+
+    fun loadRoomDataBase() {
+        database.getAllData().subscribeOn(rxProvider.ioThread())
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ list ->
+                list?.let { convertData(it) }
+            }, {
+                Timber.e(it)
+            }).let { compositeDisposable.add(it) }
+    }
+
+    private fun convertData(list: List<RoomCacheLike>) {
+        val favouritesDatabase = mutableMapOf<String, MutableList<String>>()
+        favouritesDatabase.clear()
+        list.forEach { favouritesDatabase[it.breedName] = mutableListOf() }
+        list.forEach { favouritesDatabase[it.breedName]?.add(it.url) }
+        favouritesDatabase.forEach { breedsListPresenter.breedsData.put(it.key, it.value.size) }
+        updateData()
+    }
+
+    private fun updateData() = viewState.updateRVAdapter()
+
+    override fun detachView(view: FavouritesBreedsView?) {
+        clearRx()
+        super.detachView(view)
+    }
+
+    private fun clearRx() = compositeDisposable.clear()
 
     fun backClicked(): Boolean {
         router.exit()

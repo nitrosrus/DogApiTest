@@ -36,7 +36,6 @@ class ImageRVAdapter(val presenter: IImageListPresenter) :
         private val ivImageBreed: ImageView = view.findViewById(R.id.iv_imageBreed)
         private val ivImageLoader: ImageView = view.findViewById(R.id.iv_loadImage)
 
-
         override var pos = -1
 
         override fun loadImage(url: String) {

@@ -21,16 +21,16 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
 
 
     @Inject
-    lateinit var router: Router
+     lateinit var router: Router
 
     @Inject
-    lateinit var apiBreeds: DogApiBreeds
+     lateinit var apiBreeds: DogApiBreeds
 
     @Inject
-    lateinit var rxProvider: IRxProvider
+     lateinit var rxProvider: IRxProvider
 
     @Inject
-    lateinit var networkStatus: NetworkStatus
+     lateinit var networkStatus: NetworkStatus
 
     val breedsListPresenter = BreedsListPresenter()
 
@@ -52,7 +52,6 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
                 view.setCountVisible()
                 view.setCountBreed(breedsData.values.elementAt(view.pos).toString())
             } else view.setCountInvisible()
-
         }
 
     }
@@ -61,10 +60,7 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
         super.onFirstViewAttach()
         viewState.init()
         checkInternet()
-        breedsListPresenter.itemClickListener = { index ->
-            itemClick(index)
-        }
-
+        breedsListPresenter.itemClickListener = { itemClick(it) }
     }
 
     private fun checkInternet() {
@@ -73,17 +69,15 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
 
     private fun loadData() {
         clearRx()
-        compositeDisposable.add(
-            apiBreeds.getBreeds()
-                .subscribeOn(rxProvider.ioThread())
-                .observeOn(rxProvider.uiMainThread())
-                .subscribe({ breeds ->
-                    convertData(breeds)
-                }, {
-                    Timber.e(it)
-                    checkInternet()
-                })
-        )
+        apiBreeds.getBreeds()
+            .subscribeOn(rxProvider.ioThread())
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ breeds ->
+                convertData(breeds)
+            }, {
+                Timber.e(it)
+                checkInternet()
+            }).let { compositeDisposable.add(it) }
     }
 
     private fun convertData(breeds: BreedsList) {

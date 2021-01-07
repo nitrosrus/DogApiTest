@@ -115,8 +115,18 @@ class ImagePresenter(val breed: String, val subBreed: String?) : MvpPresenter<Im
         updateData()
     }
 
-    private fun checkAndSetLikeDislike(url: String, view: ImageItemView) {
-        if (checkFavouritesInBase(url)) view.setLikeEnable() else view.setLikeDisable()
+    private fun logicCheckFavourite(index: Int) {
+        val url = imageListPresenter.imageData[index]
+        if (checkFavouritesInBase(url)) {
+            favouritesDatabase[name]?.remove(url)
+            updateData()
+            putDisLike(url)
+        } else {
+            favouritesDatabase[name]?.add(url) //danger
+            updateData()
+            putLike(url)
+
+        }
     }
 
     private fun checkFavouritesInBase(url: String): Boolean {
@@ -126,40 +136,29 @@ class ImagePresenter(val breed: String, val subBreed: String?) : MvpPresenter<Im
         return false
     }
 
-    private fun logicCheckFavourite(index: Int) {
-        val url = imageListPresenter.imageData[index]
-        if (checkFavouritesInBase(url)) {
-            favouritesDatabase[name].apply { this?.remove(url) }
-            updateData()
-            putDisLike(url)
-        } else {
-            favouritesDatabase[name].apply { this?.add(url) }
-            updateData()
-            putLike(url)
-
-        }
+    private fun checkAndSetLikeDislike(url: String, view: ImageItemView) {
+        if (checkFavouritesInBase(url)) view.setLikeEnable() else view.setLikeDisable()
     }
 
-
     private fun putLike(url: String) {
-        compositeDisposable.add(
-            database.putLikeImage(name, url).observeOn(rxProvider.uiMainThread()).subscribe()
-        )
+        database.putLikeImage(name, url).observeOn(rxProvider.uiMainThread()).subscribe()
+            .let { compositeDisposable.add(it) }
+
     }
 
     private fun putDisLike(url: String) {
-        compositeDisposable.add(
-            database.putDisLike(name, url).observeOn(rxProvider.uiMainThread()).subscribe()
-        )
+        database.putDisLike(name, url).observeOn(rxProvider.uiMainThread()).subscribe()
+            .let { compositeDisposable.add(it) }
+
     }
 
 
     fun awaitNetworkStatus() {
         clearRx()
-        compositeDisposable.add(
-            networkStatus.isOnlineObserver()
-                .subscribe { online -> if (online) loadData() }
-        )
+        networkStatus.isOnlineObserver()
+            .subscribe { online -> if (online) loadData() }
+            .let { compositeDisposable.add(it) }
+
     }
 
     fun oneOrTwo() = subBreed.isNullOrEmpty()

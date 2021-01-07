@@ -86,7 +86,6 @@ class ImageFragment : MvpAppCompatFragment(R.layout.image_fragment), ImageView,
 
 
     override fun init() {
-
         binding.rvImage.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         adapter = ImageRVAdapter(presenter.imageListPresenter).apply {
             iComponent.inject(this)
