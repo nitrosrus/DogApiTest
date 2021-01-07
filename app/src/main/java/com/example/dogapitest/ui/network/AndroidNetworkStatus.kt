@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
 class AndroidNetworkStatus(val context: Context) : NetworkStatus {

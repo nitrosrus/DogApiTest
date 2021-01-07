@@ -1,6 +1,6 @@
 package com.example.dogapitest.rx
 
-import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.Scheduler
 
 
 interface IRxProvider {

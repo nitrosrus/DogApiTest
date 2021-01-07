@@ -3,7 +3,7 @@ package com.example.dogapitest.mvp.model.api
 import com.example.dogapitest.mvp.model.breedsModel.BreedsList
 import com.example.dogapitest.mvp.model.breedsModel.ImageBreedsList
 import com.example.dogapitest.mvp.model.breedsModel.SubBreedsList
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 

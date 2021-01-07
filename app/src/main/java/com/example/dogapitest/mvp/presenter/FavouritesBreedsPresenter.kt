@@ -6,7 +6,7 @@ import com.example.dogapitest.mvp.presenter.list.IFavouritesBreedsListPresenter
 import com.example.dogapitest.mvp.view.FavouritesBreedsView
 import com.example.dogapitest.mvp.view.list.FavouritesBreedsItemView
 import com.example.dogapitest.navigation.Screens
-import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.Scheduler
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -54,13 +54,13 @@ class FavouritesBreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresent
 
     fun loadData() {
 
-        database.getAllLike().observeOn(mainThreadScheduler).subscribe({ breeds ->
-            breedsListPresenter.breeds.clear()
-            breedsListPresenter.breeds.putAll(breeds)
-            viewState.updateRVAdapter()
-        }, {
-            Timber.e(it)
-        })
+//        database.getAllLike().observeOn(mainThreadScheduler).subscribe({ breeds ->
+//            breedsListPresenter.breeds.clear()
+//            breedsListPresenter.breeds.putAll(breeds)
+//            viewState.updateRVAdapter()
+//        }, {
+//            Timber.e(it)
+//        })
 
     }
 

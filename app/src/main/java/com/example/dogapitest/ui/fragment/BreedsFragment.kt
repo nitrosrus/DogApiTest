@@ -61,10 +61,8 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
     }
 
     override fun onDestroyView() {
-        println("qwerty onDestroyView ")
         super.onDestroyView()
         _binding = null
-        println("qwerty onDestroyView  bee")
     }
 
 

@@ -3,6 +3,7 @@ package com.example.dogapitest.mvp.model.entity.room.dao
 
 import androidx.room.*
 import com.example.dogapitest.mvp.model.entity.room.db.RoomCacheLike
+import io.reactivex.Single
 
 
 @Dao
@@ -15,7 +16,7 @@ interface BreedsDao {
     fun delete(url: RoomCacheLike)
 
     @Query("SELECT * FROM RoomCacheLike")
-    fun getAllLike(): List<RoomCacheLike>
+    fun getAllLike(): Single<List<RoomCacheLike>>
 
 
 }

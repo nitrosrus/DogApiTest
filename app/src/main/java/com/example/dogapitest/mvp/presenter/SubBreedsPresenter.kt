@@ -3,17 +3,13 @@ package com.example.dogapitest.mvp.presenter
 
 import com.example.dogapitest.mvp.model.breedsModel.SubBreedsList
 import com.example.dogapitest.mvp.model.repo.DogApiBreeds
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.presenter.list.ISubBreedListPresenter
-import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.SubBreedsView
-import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.mvp.view.list.SubBreedsItemView
 import com.example.dogapitest.navigation.Screens
 import com.example.dogapitest.rx.IRxProvider
 import com.example.dogapitest.ui.network.NetworkStatus
-import io.reactivex.rxjava3.core.Scheduler
-import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router

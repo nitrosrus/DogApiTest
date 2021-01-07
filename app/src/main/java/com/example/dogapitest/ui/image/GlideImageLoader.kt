@@ -11,7 +11,7 @@ import com.bumptech.glide.request.target.Target
 import com.example.dogapitest.mvp.model.cache.image.IImageCache
 import com.example.dogapitest.mvp.model.image.IImageLoader
 import com.example.dogapitest.ui.network.NetworkStatus
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 

@@ -9,7 +9,7 @@ import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.navigation.Screens
 import com.example.dogapitest.rx.IRxProvider
 import com.example.dogapitest.ui.network.NetworkStatus
-import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router

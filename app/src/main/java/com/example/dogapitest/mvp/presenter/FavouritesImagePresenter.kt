@@ -9,9 +9,9 @@ import com.example.dogapitest.mvp.view.list.FavouritesImageItemView
 
 import com.example.dogapitest.rx.IRxProvider
 import com.example.dogapitest.ui.network.NetworkStatus
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
 
-import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -99,13 +99,13 @@ class FavouritesImagePresenter(val breedsName: String) :
 
     fun loadDataBase() {
 
-        database.getAllLike().observeOn(rxProvider.uiMainThread()).subscribe({ list ->
-            breedsLikeStatus.clear()
-            breedsLikeStatus.putAll(list)
-            loadData()
-        }, {
-            Timber.e(it)
-        })
+//        database.getAllLike().observeOn(rxProvider.uiMainThread()).subscribe({ list ->
+//            breedsLikeStatus.clear()
+//            breedsLikeStatus.putAll(list)
+//            loadData()
+//        }, {
+//            Timber.e(it)
+//        })
     }
 
     fun loadData() {

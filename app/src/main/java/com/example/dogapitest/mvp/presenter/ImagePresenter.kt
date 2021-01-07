@@ -8,7 +8,7 @@ import com.example.dogapitest.mvp.view.ImageView
 import com.example.dogapitest.mvp.view.list.ImageItemView
 import com.example.dogapitest.rx.IRxProvider
 import com.example.dogapitest.ui.network.NetworkStatus
-import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -16,10 +16,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class ImagePresenter(
-    val breed: String,
-    val subBreed: String?
-) : MvpPresenter<ImageView>() {
+class ImagePresenter(val breed: String, val subBreed: String?) : MvpPresenter<ImageView>() {
 
     @Inject
     lateinit var router: Router
@@ -38,7 +35,7 @@ class ImagePresenter(
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private var breedsLikeStatus = mutableMapOf<String, List<String>>()
+    private var favouritesDatabase = mutableMapOf<String, MutableList<String>>()
 
     private val name = subBreed ?: breed
 
@@ -52,6 +49,7 @@ class ImagePresenter(
             val url = imageData[view.pos]
             view.loadImage(url)
             checkAndSetLikeDislike(url, view)
+            view.setClickListener()
         }
     }
 
@@ -59,38 +57,86 @@ class ImagePresenter(
         super.onFirstViewAttach()
         viewState.init()
         checkInternet()
-        imageListPresenter.itemClickListener = { index -> logicCheckLike(index) }
+        imageListPresenter.itemClickListener = { index -> logicCheckFavourite(index) }
+    }
+
+    private fun checkInternet() {
+        if (networkStatus.isOnline() == true) loadData() else viewState.serverErrorInternet()
+    }
+
+
+    private fun loadData() {
+        loadRoomDataBase()
+        if (subBreed == null) loadBreeds() else loadSubBreeds()
+
+    }
+
+    private fun loadRoomDataBase() {
+
+        database.getAllData().subscribeOn(rxProvider.ioThread())
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ list ->
+                favouritesDatabase.clear()
+                list.forEach { favouritesDatabase[it.breedName] = mutableListOf() }
+                list.forEach { favouritesDatabase[it.breedName]?.add(it.url) }
+            }, {
+                Timber.e(it)
+            }).let { compositeDisposable.add(it) }
+
+    }
+
+    private fun loadBreeds() {
+        imageApi.getImage(breed)
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ list ->
+                convertData(list)
+            }, {
+                Timber.e(it)
+                checkInternet()
+            }).let { compositeDisposable.add(it) }
+
+    }
+
+    private fun loadSubBreeds() {
+        imageApi.getImage(breed, subBreed!!)
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ list ->
+                convertData(list)
+            }, {
+                Timber.e(it)
+                checkInternet()
+            }).let { compositeDisposable.add(it) }
+
+    }
+
+    private fun convertData(list: ImageBreedsList) {
+        imageListPresenter.imageData.clear()
+        imageListPresenter.imageData.addAll(list.message)
+        updateData()
     }
 
     private fun checkAndSetLikeDislike(url: String, view: ImageItemView) {
-        if (checkLikeInBase(url)) view.setLikeEnable() else view.setLikeDisable()
+        if (checkFavouritesInBase(url)) view.setLikeEnable() else view.setLikeDisable()
     }
 
-    private fun checkLikeInBase(url: String): Boolean {
-
-        breedsLikeStatus.values.forEach {
-            if (it.contains(url)) return true
+    private fun checkFavouritesInBase(url: String): Boolean {
+        favouritesDatabase[name]?.forEach {
+            if (it == url) return true
         }
         return false
     }
 
-    private fun logicCheckLike(index: Int) {
-        println("qwerty logic 1 ")
+    private fun logicCheckFavourite(index: Int) {
         val url = imageListPresenter.imageData[index]
-        if (checkLikeInBase(url)) {
-            println("qwerty logic 2 ")
-           // view.setLikeDisable()
-            breedsLikeStatus.remove(key = name, value = listOf(url))
+        if (checkFavouritesInBase(url)) {
+            favouritesDatabase[name].apply { this?.remove(url) }
             updateData()
             putDisLike(url)
-            println("qwerty logic 3 ")
         } else {
-            println("qwerty logic 4 ")
-           // view.setLikeEnable()
-            breedsLikeStatus.put(key = name, value = listOf(url))
+            favouritesDatabase[name].apply { this?.add(url) }
             updateData()
             putLike(url)
-            println("qwerty logic 5")
+
         }
     }
 
@@ -105,61 +151,6 @@ class ImagePresenter(
         compositeDisposable.add(
             database.putDisLike(name, url).observeOn(rxProvider.uiMainThread()).subscribe()
         )
-    }
-
-    private fun checkInternet() {
-        if (networkStatus.isOnline() == true) loadData() else viewState.serverErrorInternet()
-    }
-
-    fun loadRoomDataBase() {
-        compositeDisposable.add(
-            database.getAllLike()
-                .observeOn(rxProvider.uiMainThread())
-                .subscribe({ list ->
-                    breedsLikeStatus.clear()
-                    breedsLikeStatus.putAll(list)
-                }, {
-                    Timber.e(it)
-                })
-        )
-    }
-
-    private fun loadData() {
-        loadRoomDataBase()
-        if (subBreed == null) loadBreeds() else loadSubBreeds()
-
-    }
-
-    private fun loadBreeds() {
-        compositeDisposable.add(
-            imageApi.getImage(breed)
-                .observeOn(rxProvider.uiMainThread())
-                .subscribe({ list ->
-                    convertData(list)
-                }, {
-                    Timber.e(it)
-                    checkInternet()
-                })
-        )
-    }
-
-    private fun loadSubBreeds() {
-        compositeDisposable.add(
-            imageApi.getImage(breed, subBreed!!)
-                .observeOn(rxProvider.uiMainThread())
-                .subscribe({ list ->
-                    convertData(list)
-                }, {
-                    Timber.e(it)
-                    checkInternet()
-                })
-        )
-    }
-
-    private fun convertData(list: ImageBreedsList) {
-        imageListPresenter.imageData.clear()
-        imageListPresenter.imageData.addAll(list.message)
-        updateData()
     }
 
 

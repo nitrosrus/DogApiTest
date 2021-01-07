@@ -124,3 +124,4 @@ class ImageFragment : MvpAppCompatFragment(R.layout.image_fragment), ImageView,
     override fun backClicked() = presenter.backClicked()
 }
 
+

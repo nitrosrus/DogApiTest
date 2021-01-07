@@ -15,7 +15,7 @@ import com.example.dogapitest.mvp.presenter.FavouritesBreedsPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.FavouritesBreedsView
 import com.example.dogapitest.ui.adapter.FavouritesBreedsRVAdapter
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

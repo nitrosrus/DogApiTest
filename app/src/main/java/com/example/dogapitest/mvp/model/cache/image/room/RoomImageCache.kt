@@ -4,10 +4,10 @@ package com.example.dogapitest.mvp.model.cache.image.room
 import com.example.dogapitest.mvp.model.cache.image.IImageCache
 import com.example.dogapitest.mvp.model.entity.room.db.Database
 import com.example.dogapitest.mvp.model.entity.room.db.RoomCachedImage
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
