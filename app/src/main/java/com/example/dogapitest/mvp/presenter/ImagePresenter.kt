@@ -1,26 +1,23 @@
 package com.example.dogapitest.mvp.presenter
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import com.example.dogapitest.mvp.model.breedsModel.ImageBreedsList
 import com.example.dogapitest.mvp.model.cache.IBreedsCache
 import com.example.dogapitest.mvp.model.repo.ImageApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
-import com.example.dogapitest.mvp.view.BreedsImageView
+import com.example.dogapitest.mvp.view.ImageView
 import com.example.dogapitest.mvp.view.list.ImageItemView
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Scheduler
+import com.example.dogapitest.rx.IRxProvider
+import com.example.dogapitest.ui.network.NetworkStatus
+import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 @InjectViewState
-class ImagePresenter(
-    val mainThreadScheduler: Scheduler,
-    val breed: String,
-    val subBreed: String?
-) : MvpPresenter<BreedsImageView>() {
+class ImagePresenter(val breed: String, val subBreed: String?) : MvpPresenter<ImageView>() {
 
     @Inject
     lateinit var router: Router
@@ -31,104 +28,160 @@ class ImagePresenter(
     @Inject
     lateinit var database: IBreedsCache
 
-    private var breedsLikeStatus = mutableMapOf<String, List<String>>()
+    @Inject
+    lateinit var rxProvider: IRxProvider
 
-    private val name=  if (subBreed.isNullOrEmpty()) breed else subBreed
+    @Inject
+    lateinit var networkStatus: NetworkStatus
+
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    private var favouritesDatabase = mutableMapOf<String, MutableList<String>>()
+
+    private val name = subBreed ?: breed
 
     val imageListPresenter = ImageListPresenter()
 
     inner class ImageListPresenter : IImageListPresenter {
-        val image = mutableListOf<String>()
-        override var itemClickListener: ((ImageItemView) -> Unit)? = null
-        override fun getCount() = image.size
-        override fun bindView(view: ImageItemView) {
-            val url = image[view.pos]
+        val imageData = mutableListOf<String>()
+        override var itemClickListener: ((Int) -> Unit)? = null
+        override fun getCount() = imageData.size
+        override fun bind(view: ImageItemView) {
+            val url = imageData[view.pos]
             view.loadImage(url)
-            view.setlike(checkLikeBase(url))
-        }
-
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun likeBTN(view: ImageItemView) {
-            view.setlike(logicCheckLike(view))
-
+            checkAndSetLikeDislike(url, view)
+            view.setClickListener()
         }
     }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadDataBase()
-        loadData()
+        checkInternet()
+        imageListPresenter.itemClickListener = { index -> logicCheckFavourite(index) }
+    }
+
+    private fun checkInternet() {
+        if (networkStatus.isOnline() == true) loadData() else viewState.serverErrorInternet()
     }
 
 
-    fun checkLikeBase(url: String): Boolean {
-        breedsLikeStatus.values.forEach {
-            if (it.contains(url)) return true
+    private fun loadData() {
+        loadRoomDataBase()
+        if (subBreed == null) loadBreeds() else loadSubBreeds()
+
+    }
+
+    private fun loadRoomDataBase() {
+
+        database.getAllData().subscribeOn(rxProvider.ioThread())
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ list ->
+                favouritesDatabase.clear()
+                list.forEach { favouritesDatabase[it.breedName] = mutableListOf() }
+                list.forEach { favouritesDatabase[it.breedName]?.add(it.url) }
+            }, {
+                Timber.e(it)
+            }).let { compositeDisposable.add(it) }
+
+    }
+
+    private fun loadBreeds() {
+        imageApi.getImage(breed)
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ list ->
+                convertData(list)
+            }, {
+                Timber.e(it)
+                checkInternet()
+            }).let { compositeDisposable.add(it) }
+
+    }
+
+    private fun loadSubBreeds() {
+        imageApi.getImage(breed, subBreed!!)
+            .observeOn(rxProvider.uiMainThread())
+            .subscribe({ list ->
+                convertData(list)
+            }, {
+                Timber.e(it)
+                checkInternet()
+            }).let { compositeDisposable.add(it) }
+
+    }
+
+    private fun convertData(list: ImageBreedsList) {
+        imageListPresenter.imageData.clear()
+        imageListPresenter.imageData.addAll(list.message)
+        updateData()
+    }
+
+    private fun logicCheckFavourite(index: Int) {
+        val url = imageListPresenter.imageData[index]
+        if (checkFavouritesInBase(url)) {
+            favouritesDatabase[name]?.remove(url)
+            updateData()
+            putDisLike(url)
+        } else {
+            addFunction(url)
+            updateData()
+            putLike(url)
+
+        }
+    }
+
+    fun addFunction(url: String) {
+        try {
+            favouritesDatabase[name]!!.add(url)
+        } catch (e: Exception) {
+            favouritesDatabase[name] = mutableListOf()
+            favouritesDatabase[name]?.add(url)
+        }
+    }
+
+    private fun checkFavouritesInBase(url: String): Boolean {
+        favouritesDatabase[name]?.forEach {
+            if (it == url) return true
         }
         return false
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun logicCheckLike(view: ImageItemView): Boolean {
-        val url = imageListPresenter.image[view.pos]
-        val newUrl = listOf(url)
-
-        return if (checkLikeBase(url)) {
-            if (breedsLikeStatus[name]?.size == 1)
-                breedsLikeStatus.remove(name, newUrl) else breedsLikeStatus.values.remove(newUrl)
-            database.putDisLike(name, url)
-
-            false
-        } else {
-            breedsLikeStatus.put(name, newUrl)
-            putLike(view.pos)
-            true
-        }
+    private fun checkAndSetLikeDislike(url: String, view: ImageItemView) {
+        if (checkFavouritesInBase(url)) view.setLikeEnable() else view.setLikeDisable()
     }
 
-
-    fun putLike(pos: Int) {
-        database.putLikeImage(name, imageListPresenter.image[pos])
-            .observeOn(AndroidSchedulers.mainThread()).subscribe()
+    private fun putLike(url: String) {
+        database.putLikeImage(name, url).observeOn(rxProvider.uiMainThread()).subscribe()
+            .let { compositeDisposable.add(it) }
 
     }
 
-    fun loadDataBase() {
-        database.getAllLike().observeOn(mainThreadScheduler).subscribe({ list ->
-            breedsLikeStatus.clear()
-            breedsLikeStatus.putAll(list)
-        }, {
-            Timber.e(it)
-        })
+    private fun putDisLike(url: String) {
+        database.putDisLike(name, url).observeOn(rxProvider.uiMainThread()).subscribe()
+            .let { compositeDisposable.add(it) }
+
     }
 
-    fun loadData() {
-        if (subBreed.isNullOrEmpty()) {
-            imageApi.getImage(breed).observeOn(mainThreadScheduler)
-                .subscribe({ list ->
-                    imageListPresenter.image.clear()
-                    imageListPresenter.image.addAll(list.message)
-                    viewState.updateList()
-                }, {
-                    viewState.serverErrorInternet()
-                    Timber.e(it)
-                })
-        } else {
-            imageApi.getImage(breed, subBreed).observeOn(mainThreadScheduler)
-                .subscribe({ list ->
-                    imageListPresenter.image.clear()
-                    imageListPresenter.image.addAll(list.message)
-                    viewState.updateList()
-                }, {
-                    viewState.serverErrorInternet()
-                    Timber.e(it)
-                })
-        }
+
+    fun awaitNetworkStatus() {
+        clearRx()
+        networkStatus.isOnlineObserver()
+            .subscribe { online -> if (online) loadData() }
+            .let { compositeDisposable.add(it) }
+
     }
 
     fun oneOrTwo() = subBreed.isNullOrEmpty()
+
+    private fun updateData() = viewState.updateRVAdapter()
+
+    private fun clearRx() = compositeDisposable.clear()
+
+
+    override fun detachView(view: ImageView?) {
+        clearRx()
+        super.detachView(view)
+    }
 
 
     fun backClicked(): Boolean {

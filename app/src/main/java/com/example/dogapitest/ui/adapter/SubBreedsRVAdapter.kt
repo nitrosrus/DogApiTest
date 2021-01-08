@@ -3,55 +3,54 @@ package com.example.dogapitest.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dogapitest.R
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
-import com.example.dogapitest.mvp.view.list.BreedsItemView
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_breeds.view.*
+import com.example.dogapitest.mvp.presenter.list.ISubBreedListPresenter
+import com.example.dogapitest.mvp.view.list.SubBreedsItemView
 
-class SubBreedsRVAdapter(val presenter: IBreedsListPresenter) :
+
+class SubBreedsRVAdapter(val presenter: ISubBreedListPresenter) :
     RecyclerView.Adapter<SubBreedsRVAdapter.ViewHolder>() {
 
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): SubBreedsRVAdapter.ViewHolder {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_breeds, parent, false))
+        return ViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_breeds, parent, false)
+        )
+    }
 
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SubBreedsRVAdapter.ViewHolder, position: Int) {
         holder.pos = position
-        holder.containerView.setOnClickListener { presenter.itemClickListener?.invoke(holder) }
-        presenter.bindView(holder)
+        presenter.bind(holder)
     }
 
     override fun getItemCount() = presenter.getCount()
 
 
-    class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
-        LayoutContainer, BreedsItemView {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        SubBreedsItemView {
+
+        private val tvBreed: TextView = view.findViewById(R.id.tv_breeds)
+        private val tvCountBreed: TextView = view.findViewById(R.id.tv_count_breeds)
+
         override var pos = -1
 
-        override fun setBreed(text: String) = with(containerView) {
-            tv_breeds.text = text
+        override fun setBreed(breed: String) {
+            tvBreed.text = breed
         }
 
-        override fun setCountBreed(text: String) = with(containerView) {
-            tv_count_breeds.text = text
+        override fun setClickListener() {
+            itemView.setOnClickListener { presenter.itemClickListener?.invoke(pos) }
         }
-
-
-        override fun getBreads(): String = with(containerView) {
-            return tv_breeds.text as String
-        }
-
-        override fun countVisible(set: Boolean) = with(containerView) {
-            if (set) tv_count_breeds.visibility = View.INVISIBLE else tv_count_breeds.visibility =
-                View.VISIBLE
-        }
-
-
 
     }
 
-
 }
+
+
+

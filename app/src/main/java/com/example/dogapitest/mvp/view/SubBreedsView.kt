@@ -7,7 +7,6 @@ import moxy.viewstate.strategy.StateStrategyType
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface SubBreedsView : MvpView {
     fun init()
-    fun updateList()
-    fun setTitle(text:String)
+    fun updateRVAdapter()
     fun serverErrorInternet()
 }

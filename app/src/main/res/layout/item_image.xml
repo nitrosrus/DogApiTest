@@ -23,11 +23,13 @@
         android:id="@+id/btn_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_heart"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@null" />
+        android:layout_margin="16dp"
+        android:background="@null"
+        android:clickable="true"
+        android:focusable="true" />
 
 
 </RelativeLayout>

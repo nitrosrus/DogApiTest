@@ -2,7 +2,8 @@ package com.example.dogapitest.mvp.model.breedsModel
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+
 
 @Parcelize
 

@@ -36,7 +36,7 @@ class MainPresenter() : MvpPresenter<MainView>() {
     }
 
     fun btnFavorites() {
-        router.navigateTo(Screens.LikeBreedsScreen())
+        router.navigateTo(Screens.FavouritesBreedsScreen())
 
     }
 

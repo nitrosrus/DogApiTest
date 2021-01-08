@@ -2,11 +2,10 @@ package com.example.dogapitest.mvp.view.list
 
 interface BreedsItemView {
     var pos: Int
-    fun setBreed(text: String)
-    fun setCountBreed(text: String)
-    fun getBreads(): String
-    fun countVisible(set: Boolean)
-
-
+    fun setBreed(breed: String)
+    fun setCountBreed(countBreed: String)
+    fun setClickListener()
+    fun setCountVisible()
+    fun setCountInvisible()
 
 }

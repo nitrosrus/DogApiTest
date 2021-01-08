@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_gravity="center"
+    android:background="@drawable/dialog_background"
     android:clipChildren="true"
     android:fitsSystemWindows="true"
-    android:background="@drawable/dialog_background">
+    android:orientation="vertical">
 
 
     <TextView
@@ -23,6 +22,7 @@
         android:layout_gravity="center_horizontal"
         android:padding="8dp"
         android:text="@string/try_connect_later" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -34,6 +34,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ok" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorUnPress" />
+    <Button
+        android:id="@+id/btn_cancel"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel" />
 
 
 </LinearLayout>

@@ -1,0 +1,84 @@
+package com.example.dogapitest.ui.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dogapitest.App
+import com.example.dogapitest.BackButtonListener
+import com.example.dogapitest.R
+import com.example.dogapitest.databinding.FavouritesBreedsFragmentBinding
+import com.example.dogapitest.mvp.presenter.FavouritesBreedsPresenter
+import com.example.dogapitest.mvp.view.DpVisible
+import com.example.dogapitest.mvp.view.FavouritesBreedsView
+import com.example.dogapitest.ui.adapter.FavouritesBreedsRVAdapter
+import moxy.MvpAppCompatFragment
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+
+class FavouritesBreedsFragment : MvpAppCompatFragment(R.layout.favourites_breeds_fragment),
+    FavouritesBreedsView, BackButtonListener {
+
+    companion object {
+        fun newInstance() = FavouritesBreedsFragment()
+    }
+
+    @InjectPresenter
+    lateinit var presenter: FavouritesBreedsPresenter
+
+    private var adapter: FavouritesBreedsRVAdapter? = null
+
+    private var _binding: FavouritesBreedsFragmentBinding? = null
+
+    private val binding get() = _binding!!
+
+    private val breedsComponent = App.instance.breedsComponent
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FavouritesBreedsFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        breedsComponent.inject(this)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        screenSetting()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    @ProvidePresenter
+    fun providePresenter() = FavouritesBreedsPresenter().apply {
+        breedsComponent.inject(this)
+    }
+
+    override fun init() {
+        binding.rvBreeds.layoutManager = LinearLayoutManager(context)
+        adapter = FavouritesBreedsRVAdapter(presenter.breedsListPresenter).apply {
+            breedsComponent.inject(this)
+        }
+        binding.rvBreeds.adapter = adapter
+    }
+
+    override fun updateRVAdapter() {
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun screenSetting() {
+        (activity as DpVisible).setLikeBreedScreenSetting()
+    }
+    override fun backClicked() = presenter.backClicked()
+}

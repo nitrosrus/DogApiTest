@@ -9,7 +9,7 @@ import com.example.dogapitest.ui.activity.MainActivity
 import dagger.Component
 import javax.inject.Singleton
 
-//nitrosrus.com
+
 @Singleton
 @Component(
     modules = [
@@ -17,7 +17,9 @@ import javax.inject.Singleton
         CiceroneModule::class,
         ApiModule::class,
         ImageModule::class,
-        DatabaseModule::class
+        DatabaseModule::class,
+        RxModule::class,
+        DialogModule::class
 
     ]
 )
