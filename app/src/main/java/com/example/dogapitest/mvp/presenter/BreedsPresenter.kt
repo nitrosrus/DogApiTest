@@ -1,12 +1,15 @@
 package com.example.dogapitest.mvp.presenter
 
 
+import com.example.dogapitest.mvp.model.breedsModel.BreedsList
 import com.example.dogapitest.mvp.model.repo.DogApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.view.BreedsView
 import com.example.dogapitest.mvp.view.list.BreedsItemView
 import com.example.dogapitest.navigation.Screens
-import io.reactivex.rxjava3.core.Scheduler
+import com.example.dogapitest.rx.IRxProvider
+import com.example.dogapitest.ui.network.NetworkStatus
+import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -14,61 +17,106 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class BreedsPresenter(val mainThreadScheduler: Scheduler) : MvpPresenter<BreedsView>() {
+class BreedsPresenter() : MvpPresenter<BreedsView>() {
+
 
     @Inject
-    lateinit var router: Router
+     lateinit var router: Router
 
     @Inject
-    lateinit var apiBreeds: DogApiBreeds
+     lateinit var apiBreeds: DogApiBreeds
+
+    @Inject
+     lateinit var rxProvider: IRxProvider
+
+    @Inject
+     lateinit var networkStatus: NetworkStatus
 
     val breedsListPresenter = BreedsListPresenter()
 
-    class BreedsListPresenter : IBreedsListPresenter {
-        val breeds = mutableMapOf<String, List<String>>()
-        override var itemClickListener: ((BreedsItemView) -> Unit)? = null
-        override fun getCount() = breeds.size
-        override fun bindView(view: BreedsItemView) {
-            listBreeds(view)
-            view.countVisible(breeds.values.elementAt(view.pos).isEmpty())
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    class BreedsListPresenter() : IBreedsListPresenter {
+
+        var breedsData = mutableMapOf<String, Int>()
+        override var itemClickListener: ((Int) -> Unit)? = null
+        override fun getCount() = breedsData.keys.size
+        override fun bind(view: BreedsItemView) {
+            view.setClickListener()
+            view.setBreed(breedsData.keys.elementAt(view.pos))
+            setCountChecker(view)
         }
 
-        fun listBreeds(view: BreedsItemView) {
-            view.setBreed(breeds.keys.elementAt(view.pos))
-            view.setCountBreed(breeds.values.elementAt(view.pos).size.toString())
-
+        private fun setCountChecker(view: BreedsItemView) {
+            if (breedsData.values.elementAt(view.pos) != 0) {
+                view.setCountVisible()
+                view.setCountBreed(breedsData.values.elementAt(view.pos).toString())
+            } else view.setCountInvisible()
         }
 
     }
-
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadData()
-        breedsListPresenter.itemClickListener = { view ->
-            if (breedsListPresenter.breeds[view.getBreads()]?.size == 0) {
-                router.navigateTo(Screens.ImageScreen(view.getBreads(), null))
-            } else {
-                router.navigateTo(Screens.SubBreadsScreen(view.getBreads()))
-            }
-        }
+        checkInternet()
+        breedsListPresenter.itemClickListener = { itemClick(it) }
     }
 
+    private fun checkInternet() {
+        if (networkStatus.isOnline() == true) loadData() else viewState.serverErrorInternet()
+    }
 
-    fun loadData() {
-        apiBreeds.getBreeds().observeOn(mainThreadScheduler)
+    private fun loadData() {
+        clearRx()
+        apiBreeds.getBreeds()
+            .subscribeOn(rxProvider.ioThread())
+            .observeOn(rxProvider.uiMainThread())
             .subscribe({ breeds ->
-                breedsListPresenter.breeds.clear()
-                breedsListPresenter.breeds.putAll(breeds.message)
-                viewState.updateList()
+                convertData(breeds)
             }, {
                 Timber.e(it)
-                viewState.serverErrorInternet()
-            })
+                checkInternet()
+            }).let { compositeDisposable.add(it) }
     }
 
+    private fun convertData(breeds: BreedsList) {
+        breedsListPresenter.breedsData.clear()
+        breeds.message.forEach { entryMap ->
+            breedsListPresenter.breedsData[entryMap.key] = entryMap.value.size
+        }
+
+        updateData()
+
+    }
+
+    private fun updateData() = viewState.updateRVAdapter()
+
+    fun awaitNetworkStatus() {
+        clearRx()
+        compositeDisposable.add(
+            networkStatus.isOnlineObserver()
+                .subscribe { online -> if (online) loadData() }
+        )
+    }
+
+    private fun itemClick(index: Int) {
+        if (breedsListPresenter.breedsData.values.elementAt(index) != 0) {
+            router.navigateTo(Screens.SubBreadsScreen(getBreedByIndex(index)))
+        } else {
+            router.navigateTo(Screens.ImageScreen(getBreedByIndex(index), null))
+        }
+
+    }
+
+    private fun getBreedByIndex(index: Int) = breedsListPresenter.breedsData.keys.elementAt(index)
+
+    override fun detachView(view: BreedsView?) {
+        clearRx()
+        super.detachView(view)
+    }
+
+    private fun clearRx() = compositeDisposable.clear()
 
     fun backClicked(): Boolean {
         router.exit()

@@ -1,12 +1,15 @@
 package com.example.dogapitest.mvp.presenter
 
 
+import com.example.dogapitest.mvp.model.breedsModel.SubBreedsList
 import com.example.dogapitest.mvp.model.repo.DogApiBreeds
-import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
+import com.example.dogapitest.mvp.presenter.list.ISubBreedListPresenter
 import com.example.dogapitest.mvp.view.SubBreedsView
-import com.example.dogapitest.mvp.view.list.BreedsItemView
+import com.example.dogapitest.mvp.view.list.SubBreedsItemView
 import com.example.dogapitest.navigation.Screens
-import io.reactivex.rxjava3.core.Scheduler
+import com.example.dogapitest.rx.IRxProvider
+import com.example.dogapitest.ui.network.NetworkStatus
+import io.reactivex.disposables.CompositeDisposable
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
@@ -14,52 +17,91 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class SubBreedsPresenter(val mainThreadScheduler: Scheduler, val breeds: String) :
+class SubBreedsPresenter(val breeds: String) :
     MvpPresenter<SubBreedsView>() {
-
-
-     class SubBreedsListPresenter : IBreedsListPresenter {
-        val subBreeds = mutableListOf<String>()
-        override var itemClickListener: ((BreedsItemView) -> Unit)? = null
-        override fun getCount() = subBreeds.size
-        override fun bindView(view: BreedsItemView) {
-            val breed = subBreeds[view.pos]
-            view.setBreed(breed)
-            view.countVisible(subBreeds.elementAt(view.pos).isEmpty())
-        }
-    }
-
     @Inject
     lateinit var router: Router
 
     @Inject
     lateinit var apiBreeds: DogApiBreeds
 
+    @Inject
+    lateinit var rxProvider: IRxProvider
+
+    @Inject
+    lateinit var networkStatus: NetworkStatus
 
     val subBreedsListPresenter = SubBreedsListPresenter()
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.init()
-        loadData()
-        subBreedsListPresenter.itemClickListener = { view ->
-            router.navigateTo(Screens.ImageScreen(breeds,view.getBreads()))
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    class SubBreedsListPresenter() : ISubBreedListPresenter {
+        val subBreedsData = mutableListOf<String>()
+        override var itemClickListener: ((Int) -> Unit)? = null
+        override fun getCount() = subBreedsData.size
+        override fun bind(view: SubBreedsItemView) {
+            view.setClickListener()
+            view.setBreed(subBreedsData[view.pos])
         }
 
     }
 
-
-    fun loadData() {
-        apiBreeds.getSubBreeds(breeds).observeOn(mainThreadScheduler).subscribe({ breedList ->
-            subBreedsListPresenter.subBreeds.clear()
-            subBreedsListPresenter.subBreeds.addAll(breedList.message)
-            viewState.updateList()
-        }, {
-            viewState.serverErrorInternet()
-            Timber.e(it)
-        })
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.init()
+        checkInternet()
+        subBreedsListPresenter.itemClickListener = { index ->
+            itemClick(index)
+        }
     }
 
+    private fun checkInternet() {
+        if (networkStatus.isOnline() == true) loadData() else viewState.serverErrorInternet()
+    }
+
+    fun loadData() {
+        clearRx()
+        compositeDisposable.add(
+            apiBreeds.getSubBreeds(breeds)
+                .subscribeOn(rxProvider.ioThread())
+                .observeOn(rxProvider.uiMainThread())
+                .subscribe({ subBreeds ->
+                    convertData(subBreeds)
+                }, {
+                    Timber.e(it)
+                    checkInternet()
+                })
+        )
+    }
+
+    private fun convertData(subBreeds: SubBreedsList) {
+        subBreedsListPresenter.subBreedsData.clear()
+        subBreedsListPresenter.subBreedsData.addAll(subBreeds.message)
+        updateData()
+    }
+
+    private fun updateData() = viewState.updateRVAdapter()
+
+    fun awaitNetworkStatus() {
+        clearRx()
+        compositeDisposable.add(
+            networkStatus.isOnlineObserver()
+                .subscribe { online -> if (online) loadData() }
+        )
+    }
+
+    private fun itemClick(index: Int) {
+        router.navigateTo(Screens.ImageScreen(breeds, getBreedByIndex(index)))
+    }
+
+    private fun getBreedByIndex(index: Int) = subBreedsListPresenter.subBreedsData[index]
+
+    override fun detachView(view: SubBreedsView?) {
+        clearRx()
+        super.detachView(view)
+    }
+
+    private fun clearRx() = compositeDisposable.clear()
 
     fun backClicked(): Boolean {
         router.exit()

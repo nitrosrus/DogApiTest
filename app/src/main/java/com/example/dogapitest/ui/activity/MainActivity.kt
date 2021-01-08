@@ -1,35 +1,26 @@
 package com.example.dogapitest.ui.activity
 
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.app.ActionBar
 import com.example.dogapitest.App
 import com.example.dogapitest.BackButtonListener
 import com.example.dogapitest.R
+import com.example.dogapitest.databinding.ActivityMainBinding
 import com.example.dogapitest.mvp.presenter.MainPresenter
 import com.example.dogapitest.mvp.view.DpVisible
 import com.example.dogapitest.mvp.view.MainView
-import com.example.dogapitest.ui.network.SharePhoto
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.custom_action_bar.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
-import java.util.prefs.AbstractPreferences
 import javax.inject.Inject
 
-class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
+class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpVisible {
 
     companion object {
         const val MAIN_ACTIVITY = "MainActivity"
     }
-
-    lateinit var bottomBar: BottomNavigationView
-
-    lateinit var navigator: SupportAppNavigator
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
@@ -37,11 +28,20 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
     @InjectPresenter
     lateinit var presenter: MainPresenter
 
+     lateinit var binding: ActivityMainBinding
+
+    lateinit var bottomBar: BottomNavigationView
+
+    lateinit var navigator: SupportAppNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+
         App.instance.appComponent.inject(this)
+
     }
 
     @ProvidePresenter
@@ -51,13 +51,9 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
 
 
     override fun init() {
-        supportActionBar?.apply {
-            setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
-            setDisplayShowCustomEnabled(true)
-            setCustomView(R.layout.custom_action_bar)
-        }
-        navigator = SupportAppNavigator(this, R.id.container)
-        bottomBar = findViewById(R.id.bab_nav)
+
+        navigator = SupportAppNavigator(this, binding.container.id)
+        bottomBar = binding.babNav
         bottomBar.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.btn_list -> {
@@ -69,13 +65,22 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
             }
             true
         }
+        binding.topBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.top_action_share -> sharePhotoClick()
 
-        iv_action_share.setOnClickListener { sharePhotoClick() }
-        tv_action_back.setOnClickListener { onBackPressed() }
+            }
+            true
+        }
+
+//        customActionBarBinding.ivActionBack.setOnClickListener { onBackPressed() }
+//        customActionBarBinding.ivActionShare.setOnClickListener { sharePhotoClick() }
+//        iv_action_share.setOnClickListener { sharePhotoClick() }
+//       tv_action_back.setOnClickListener { onBackPressed() }
     }
 
     private fun sharePhotoClick() {
-        SharePhoto.newInstance().show(supportFragmentManager, MAIN_ACTIVITY)
+        //SharePhoto.newInstance().show(supportFragmentManager, MAIN_ACTIVITY)
     }
 
 
@@ -99,68 +104,71 @@ class MainActivity : MvpAppCompatActivity(), MainView, DpVisible {
     }
 
     override fun setActionBarTitle(text: String) {
-        tv_action_title.text = text
+        binding.topBar.title = text
+//        customActionBarBinding.tvActionTitle.text=text
+
     }
 
     override fun setBreedScreensSetting(text: String) {
-        tv_action_back.visibility = View.VISIBLE
-        iv_action_back.visibility = View.VISIBLE
-        iv_action_share.visibility = View.INVISIBLE
-        tv_action_back.text = tv_action_title.text
-        tv_action_title.text = text
-        bab_nav.visibility = View.GONE
+//        customActionBarBinding.ivActionBack.visibility = View.VISIBLE
+//        customActionBarBinding.ivActionShare.visibility = View.INVISIBLE
+//        customActionBarBinding.tvActionBack.text = customActionBarBinding.tvActionTitle.text
+//        customActionBarBinding.tvActionBack.visibility = View.VISIBLE
+        binding.topBar.title = text
+        // bab_nav.visibility = View.GONE
     }
 
     override fun setImageBreedScreenSetting(text: String) {
-        tv_action_back.visibility = View.VISIBLE
-        iv_action_back.visibility = View.VISIBLE
-        iv_action_share.visibility = View.VISIBLE
-        tv_action_back.text = tv_action_title.text
-        tv_action_title.text = text
-        bab_nav.visibility = View.GONE
+//        customActionBarBinding.tvActionBack.visibility = View.VISIBLE
+//        customActionBarBinding.ivActionBack.visibility = View.VISIBLE
+//        customActionBarBinding.ivActionShare.visibility = View.VISIBLE
+//        customActionBarBinding.tvActionBack.text = customActionBarBinding.tvActionTitle.text
+        binding.topBar.title = text
+        //bab_nav.visibility = View.GONE
     }
 
     override fun setImageBreedScreenSetting(breed: String, subBreed: String) {
-        tv_action_back.visibility = View.VISIBLE
-        iv_action_back.visibility = View.VISIBLE
-        iv_action_share.visibility = View.VISIBLE
-        tv_action_back.text = tv_action_title.text
-        tv_action_title.text = subBreed
-        bab_nav.visibility = View.GONE
+//        customActionBarBinding.tvActionBack.visibility = View.VISIBLE
+//        customActionBarBinding.ivActionBack.visibility = View.VISIBLE
+//        customActionBarBinding.ivActionShare.visibility = View.VISIBLE
+//        customActionBarBinding.tvActionBack.text = customActionBarBinding.tvActionTitle.text
+//        customActionBarBinding.tvActionTitle.text = subBreed
+        //bab_nav.visibility = View.GONE
     }
 
-    override fun setFirstScreenSetting(breed: String) {
-        tv_action_back.visibility = View.INVISIBLE
-        iv_action_back.visibility = View.INVISIBLE
-        iv_action_share.visibility = View.INVISIBLE
-        tv_action_title.text = breed
-        bab_nav.visibility = View.VISIBLE
+    override fun setFirstScreenSetting(firstScreen: Int) {
+
+//        customActionBarBinding.tvActionBack.visibility = View.INVISIBLE
+//        customActionBarBinding.ivActionBack.visibility = View.INVISIBLE
+//        customActionBarBinding.ivActionShare.visibility = View.INVISIBLE
+        binding.topBar.title = getString(firstScreen)
+        //bab_nav.visibility = View.VISIBLE
 
     }
 
     override fun setSubBreedScreenSetting(breed: String) {
-        tv_action_back.visibility = View.VISIBLE
-        iv_action_back.visibility = View.VISIBLE
-        iv_action_share.visibility = View.INVISIBLE
-        tv_action_back.text = tv_action_title.text
-        tv_action_title.text = breed
-        tv_action_back.text = "Back"
-        bab_nav.visibility = View.GONE
+//        customActionBarBinding.tvActionBack.visibility = View.VISIBLE
+//        customActionBarBinding.ivActionBack.visibility = View.VISIBLE
+//        customActionBarBinding.ivActionShare.visibility = View.INVISIBLE
+//        customActionBarBinding.tvActionBack.text = customActionBarBinding.tvActionTitle.text
+        binding.topBar.title = breed
+//        customActionBarBinding.tvActionBack.text = "Back"
+        //bab_nav.visibility = View.GONE
     }
 
     override fun setLikeBreedScreenSetting() {
-        tv_action_back.visibility = View.INVISIBLE
-        iv_action_back.visibility = View.INVISIBLE
-        iv_action_share.visibility = View.INVISIBLE
-        bab_nav.visibility = View.VISIBLE
+//        customActionBarBinding.tvActionBack.visibility = View.INVISIBLE
+//        customActionBarBinding.ivActionBack.visibility = View.INVISIBLE
+//        customActionBarBinding.ivActionShare.visibility = View.INVISIBLE
+        //bab_nav.visibility = View.VISIBLE
     }
 
-    override fun setLikeImageScreenSetting(breed: String) {
-        tv_action_back.visibility = View.VISIBLE
-        iv_action_back.visibility = View.VISIBLE
-        iv_action_share.visibility = View.VISIBLE
-        tv_action_back.text = tv_action_title.text
-        tv_action_title.text = breed
-        bab_nav.visibility = View.GONE
+    override fun setFavouritesImageScreenSetting(breed: String) {
+//      customActionBarBinding.tvActionBack.visibility = View.VISIBLE
+//      customActionBarBinding.ivActionBack.visibility = View.VISIBLE
+//      customActionBarBinding.ivActionShare.visibility = View.VISIBLE
+//      customActionBarBinding.tvActionBack.text = customActionBarBinding.tvActionTitle.text
+//      customActionBarBinding.tvActionTitle.text = breed
+        //bab_nav.visibility = View.GONE
     }
 }
