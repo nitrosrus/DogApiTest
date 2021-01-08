@@ -41,7 +41,6 @@ class FavouritesImagePresenter(val breed: String) :
         override fun getCount() = imageData.size
         override fun bind(view: FavouritesImageItemView) {
             val url = imageData[view.pos]
-            println("qwerty " + url)
             view.loadImage(url)
             view.setLikeEnable()
             view.setClickListener()
