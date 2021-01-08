@@ -13,6 +13,7 @@ import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 @InjectViewState
@@ -122,10 +123,19 @@ class ImagePresenter(val breed: String, val subBreed: String?) : MvpPresenter<Im
             updateData()
             putDisLike(url)
         } else {
-            favouritesDatabase[name]?.add(url) //danger
+            addFunction(url)
             updateData()
             putLike(url)
 
+        }
+    }
+
+    fun addFunction(url: String) {
+        try {
+            favouritesDatabase[name]!!.add(url)
+        } catch (e: Exception) {
+            favouritesDatabase[name] = mutableListOf()
+            favouritesDatabase[name]?.add(url)
         }
     }
 
