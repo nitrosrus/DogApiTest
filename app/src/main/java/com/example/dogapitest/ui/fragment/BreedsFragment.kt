@@ -87,7 +87,7 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
     }
 
     private fun screenSetting() {
-        (activity as? DpVisible)?.setFirstScreenSetting(R.string.setFirstScreen)
+        (activity as? DpVisible)?.setFirstScreenSetting()
     }
 
     override fun backClicked() = presenter.backClicked()

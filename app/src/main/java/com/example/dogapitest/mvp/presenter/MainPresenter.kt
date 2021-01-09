@@ -31,7 +31,6 @@ class MainPresenter() : MvpPresenter<MainView>() {
 
 
     fun btnList() {
-
         router.navigateTo(Screens.BreedsScreen())
     }
 

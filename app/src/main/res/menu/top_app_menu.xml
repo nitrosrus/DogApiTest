@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<!--    <item-->
-<!--        android:id="@+id/top_action_back"-->
-<!--        android:icon="@drawable/ic_back"-->
-<!--        android:title="@string/back"-->
-<!--        android:contentDescription="@string/back"-->
-<!--        app:showAsAction="always"/>-->
-<!--    <item-->
-<!--        android:id="@+id/top_action_title"-->
-<!--        android:title="@string/breeds"-->
-<!--        app:showAsAction="ifRoom"/>-->
-
     <item
         android:id="@+id/top_action_share"
         android:icon="@drawable/ic_share"
         android:title="@string/share"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
 
 </menu>

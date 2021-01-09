@@ -19,10 +19,10 @@ import javax.inject.Inject
 class FavouritesBreedsPresenter() : MvpPresenter<FavouritesBreedsView>() {
 
     @Inject
-     lateinit var router: Router
+    lateinit var router: Router
 
     @Inject
-     lateinit var database: IBreedsCache
+    lateinit var database: IBreedsCache
 
     @Inject
     lateinit var rxProvider: IRxProvider
@@ -59,7 +59,7 @@ class FavouritesBreedsPresenter() : MvpPresenter<FavouritesBreedsView>() {
             itemClick(it)
         }
     }
-
+    
     private fun itemClick(index: Int) {
         router.navigateTo(Screens.LikeImageScreen(getBreedByIndex(index)))
     }
