@@ -29,7 +29,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:menu="@menu/top_app_menu"
                 app:navigationIcon="@drawable/ic_back"
-                app:title="testtitle" />
+                app:title="@string/breeds" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -56,7 +56,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_menu" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

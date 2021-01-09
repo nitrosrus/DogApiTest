@@ -9,7 +9,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerInParent="true"
-        android:scaleType="center" />
+        android:scaleType="center"
+        android:contentDescription="load image gif" />
 
     <ImageView
         android:id="@+id/iv_imageBreed"
@@ -17,7 +18,8 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:fitsSystemWindows="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:contentDescription="breeds image container" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btn_like"

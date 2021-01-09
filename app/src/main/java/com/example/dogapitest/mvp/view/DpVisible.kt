@@ -1,8 +1,8 @@
 package com.example.dogapitest.mvp.view
 
 interface DpVisible {
-    fun setBreedScreensSetting(text: String)
-    fun setImageBreedScreenSetting(text: String)
+    fun setBreedScreensSetting(breed: String)
+    fun setImageBreedScreenSetting(breed: String)
     fun setFirstScreenSetting()
     fun setSubBreedScreenSetting(breed: String)
     fun setLikeBreedScreenSetting()

@@ -41,7 +41,6 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpV
         setContentView(binding.root)
 
         App.instance.appComponent.inject(this)
-
     }
 
     @ProvidePresenter
@@ -49,6 +48,15 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpV
         App.instance.appComponent.inject(this)
     }
 
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(navigator)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        navigatorHolder.removeNavigator()
+    }
 
     override fun init() {
         navigator = SupportAppNavigator(this, binding.container.id)
@@ -66,7 +74,7 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpV
         }
         binding.topBar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.top_action_share -> sharePhotoClick()
+                //R.id.top_action_share -> sharePhotoClick()
             }
             true
         }
@@ -77,27 +85,6 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpV
     private fun sharePhotoClick() {
         //SharePhoto.newInstance().show(supportFragmentManager, MAIN_ACTIVITY)
     }
-
-
-    override fun onResumeFragments() {
-        super.onResumeFragments()
-        navigatorHolder.setNavigator(navigator)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        navigatorHolder.removeNavigator()
-    }
-
-    override fun onBackPressed() {
-        supportFragmentManager.fragments.forEach {
-            if (it is BackButtonListener && it.backClicked()) {
-                return
-            }
-        }
-        presenter.backClicked()
-    }
-
 
     override fun setBreedScreensSetting(breed: String) {
         binding.topBar.title = breed
@@ -121,5 +108,14 @@ class MainActivity : MvpAppCompatActivity(R.layout.activity_main), MainView, DpV
 
     override fun setFavouritesImageScreenSetting(breed: String) {
         binding.topBar.title = breed
+    }
+
+    override fun onBackPressed() {
+        supportFragmentManager.fragments.forEach {
+            if (it is BackButtonListener && it.backClicked()) {
+                return
+            }
+        }
+        presenter.backClicked()
     }
 }
