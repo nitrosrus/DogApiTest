@@ -113,7 +113,6 @@ class ImageFragment : MvpAppCompatFragment(R.layout.image_fragment), ImageView,
             )
         else
             (activity as DpVisible).setImageBreedScreenSetting(
-                arguments?.get(IMAGEBREEDS_KEY).toString(),
                 arguments?.get(IMAGESUBBREEDS_KEY).toString()
             )
 
