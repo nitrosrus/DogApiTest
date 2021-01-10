@@ -9,7 +9,6 @@ import dagger.Provides
 @Module
 class RxModule {
 
-
     @Provides
     fun getRxProvider(): IRxProvider {
         return RxProvider()

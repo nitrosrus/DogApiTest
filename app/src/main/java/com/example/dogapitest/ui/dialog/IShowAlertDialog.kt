@@ -7,5 +7,5 @@ interface IShowAlertDialog {
     var clickListener: (() -> Unit)?
 
     fun getAlertInternet(context: Context): AlertDialog
-    fun getAlertSharePhoto()
+    fun getAlertSharePhoto(context: Context): AlertDialog
 }

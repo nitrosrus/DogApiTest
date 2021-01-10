@@ -13,11 +13,10 @@ class ShowAlertDialog(context: Context) : AlertDialog(context), IShowAlertDialog
 
     override fun getAlertInternet(context: Context): AlertDialog {
         return serverErrorInternet(context)
-
     }
 
-    override fun getAlertSharePhoto() {
-        TODO("Not yet implemented")
+    override fun getAlertSharePhoto(context: Context): AlertDialog {
+        return sharePhotoDialog(context)
     }
 
 
@@ -30,42 +29,28 @@ class ShowAlertDialog(context: Context) : AlertDialog(context), IShowAlertDialog
         val dialog = builder.create()
         btnOk.setOnClickListener {
             clickListener?.invoke()
-            if (dialog != null) {
-                dialog.dismiss()
-            }
+            dialog.dismiss()
         }
         btnCancel.setOnClickListener { dialog.dismiss() }
         return dialog
     }
 
-    private fun sharePhotoDialog(context: Context) {
-
-
+    private fun sharePhotoDialog(context: Context): AlertDialog {
+        val builder = Builder(context)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_share_photo, null)
+        val btnOk = dialogView.findViewById<Button>(R.id.btn_share)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
+        builder.setView(dialogView)
+        val dialog = builder.create()
+        btnOk.setOnClickListener {
+            clickListener?.invoke()
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        return dialog
     }
 
 
-//    companion object {
-//        fun newInstance(): SharePhoto {
-//            val dialogFragment = SharePhoto()
-//            return dialogFragment
-//        }
-//    }
-//
-//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//        val context = activity
-//        return getAlertDialog(context!!)
-//    }
-//
-//    fun getAlertDialog(context: Context): AlertDialog {
-//        val builder = AlertDialog.Builder(context)
-//        builder.setView(
-//            View.inflate(context, R.layout.dialog_share_photo, null)
-//                .apply {
-//                    findViewById<Button>(R.id.btn_share).setOnClickListener { dialog?.dismiss() }
-//                    findViewById<Button>(R.id.btn_cancel).setOnClickListener { dialog?.dismiss() }
-//                })
-//        return builder.create()
-//    }
 }
 
 

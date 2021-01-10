@@ -1,8 +1,8 @@
 package com.example.dogapitest.mvp.presenter
 
 
-import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.model.entity.room.db.RoomCacheLike
+import com.example.dogapitest.mvp.model.cache.IRoomFavouritesCache
+import com.example.dogapitest.mvp.model.entity.RoomFavourites
 import com.example.dogapitest.mvp.presenter.list.IFavouritesBreedsListPresenter
 import com.example.dogapitest.mvp.view.FavouritesBreedsView
 import com.example.dogapitest.mvp.view.list.FavouritesBreedsItemView
@@ -22,7 +22,7 @@ class FavouritesBreedsPresenter() : MvpPresenter<FavouritesBreedsView>() {
     lateinit var router: Router
 
     @Inject
-    lateinit var database: IBreedsCache
+    lateinit var database: IRoomFavouritesCache
 
     @Inject
     lateinit var rxProvider: IRxProvider
@@ -59,7 +59,7 @@ class FavouritesBreedsPresenter() : MvpPresenter<FavouritesBreedsView>() {
             itemClick(it)
         }
     }
-    
+
     private fun itemClick(index: Int) {
         router.navigateTo(Screens.LikeImageScreen(getBreedByIndex(index)))
     }
@@ -76,7 +76,7 @@ class FavouritesBreedsPresenter() : MvpPresenter<FavouritesBreedsView>() {
             }).let { compositeDisposable.add(it) }
     }
 
-    private fun convertData(list: List<RoomCacheLike>) {
+    private fun convertData(list: List<RoomFavourites>) {
         val favouritesDatabase = mutableMapOf<String, MutableList<String>>()
         favouritesDatabase.clear()
         list.forEach { favouritesDatabase[it.breedName] = mutableListOf() }

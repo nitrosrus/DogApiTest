@@ -1,46 +1,46 @@
 package com.example.dogapitest.mvp.model.entity.room.dao
 
 import androidx.room.*
-import com.example.dogapitest.mvp.model.entity.room.db.RoomCachedImage
+import com.example.dogapitest.mvp.model.entity.RoomImage
 
 
 @Dao
 interface ImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(breed: RoomCachedImage)
+    fun insert(breed: RoomImage)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg breed: RoomCachedImage)
+    fun insert(vararg breed: RoomImage)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(breed: List<RoomCachedImage>)
+    fun insert(breed: List<RoomImage>)
 
     @Update
-    fun update(breed: RoomCachedImage)
+    fun update(breed: RoomImage)
 
     @Update
-    fun update(vararg breed: RoomCachedImage)
+    fun update(vararg breed: RoomImage)
 
     @Update
-    fun update(breed: List<RoomCachedImage>)
+    fun update(breed: List<RoomImage>)
 
     @Delete
-    fun delete(breed: RoomCachedImage)
+    fun delete(breed: RoomImage)
 
     @Delete
-    fun delete(vararg breed: RoomCachedImage)
+    fun delete(vararg breed: RoomImage)
 
     @Delete
-    fun delete(breed: List<RoomCachedImage>)
+    fun delete(breed: List<RoomImage>)
 
-    @Query("DELETE FROM RoomCachedImage")
+    @Query("DELETE FROM RoomImage")
     fun clear()
 
-    @Query("SELECT * FROM RoomCachedImage")
-    fun getAll(): List<RoomCachedImage>
+    @Query("SELECT * FROM RoomImage")
+    fun getAll(): List<RoomImage>
 
-    @Query("SELECT * FROM RoomCachedImage WHERE url = :url LIMIT 1")
-    fun FindByUrl(url: String): RoomCachedImage?
+    @Query("SELECT * FROM RoomImage WHERE url = :url LIMIT 1")
+    fun FindByUrl(url: String): RoomImage?
 
 
 }

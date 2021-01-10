@@ -2,7 +2,7 @@ package com.example.dogapitest.mvp.presenter
 
 
 import com.example.dogapitest.mvp.model.breedsModel.SubBreedsList
-import com.example.dogapitest.mvp.model.repo.DogApiBreeds
+import com.example.dogapitest.mvp.model.source.ApiBreeds
 import com.example.dogapitest.mvp.presenter.list.ISubBreedListPresenter
 import com.example.dogapitest.mvp.view.SubBreedsView
 import com.example.dogapitest.mvp.view.list.SubBreedsItemView
@@ -23,7 +23,7 @@ class SubBreedsPresenter(val breeds: String) :
     lateinit var router: Router
 
     @Inject
-    lateinit var apiBreeds: DogApiBreeds
+    lateinit var apiBreeds: ApiBreeds
 
     @Inject
     lateinit var rxProvider: IRxProvider

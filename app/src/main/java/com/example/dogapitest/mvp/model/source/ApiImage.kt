@@ -1,4 +1,4 @@
-package com.example.dogapitest.mvp.model.repo
+package com.example.dogapitest.mvp.model.source
 
 import com.example.dogapitest.mvp.model.api.IDataSource
 import com.example.dogapitest.mvp.model.breedsModel.ImageBreedsList
@@ -6,7 +6,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 
-class ImageApiBreeds(val api: IDataSource) {
+class ApiImage(val api: IDataSource) {
 
     fun getImage(breeds: String): Single<ImageBreedsList>
             = api.getBreedsImage(breeds).subscribeOn(Schedulers.io())

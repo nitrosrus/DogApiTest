@@ -1,8 +1,8 @@
 package com.example.dogapitest.mvp.presenter
 
 import com.example.dogapitest.mvp.model.breedsModel.ImageBreedsList
-import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.model.repo.ImageApiBreeds
+import com.example.dogapitest.mvp.model.cache.IRoomFavouritesCache
+import com.example.dogapitest.mvp.model.source.ApiImage
 import com.example.dogapitest.mvp.presenter.list.IImageListPresenter
 import com.example.dogapitest.mvp.view.ImageView
 import com.example.dogapitest.mvp.view.list.ImageItemView
@@ -23,10 +23,10 @@ class ImagePresenter(val breed: String, val subBreed: String?) : MvpPresenter<Im
     lateinit var router: Router
 
     @Inject
-    lateinit var imageApi: ImageApiBreeds
+    lateinit var imageApi: ApiImage
 
     @Inject
-    lateinit var database: IBreedsCache
+    lateinit var database: IRoomFavouritesCache
 
     @Inject
     lateinit var rxProvider: IRxProvider

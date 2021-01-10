@@ -1,4 +1,4 @@
-package com.example.dogapitest.mvp.model.cache.image
+package com.example.dogapitest.mvp.model.cache
 
 import io.reactivex.Completable
 import io.reactivex.Maybe

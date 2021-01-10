@@ -1,10 +1,10 @@
-package com.example.dogapitest.mvp.model.entity.room.db
+package com.example.dogapitest.mvp.model.entity
 
 import androidx.room.*
 
 
 @Entity
-data class RoomCacheLike(
+data class RoomFavourites(
     val breedName: String,
     @PrimaryKey val url: String
 )

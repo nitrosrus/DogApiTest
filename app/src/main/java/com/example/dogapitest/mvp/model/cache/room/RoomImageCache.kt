@@ -1,9 +1,9 @@
-package com.example.dogapitest.mvp.model.cache.image.room
+package com.example.dogapitest.mvp.model.cache.room
 
 
-import com.example.dogapitest.mvp.model.cache.image.IImageCache
+import com.example.dogapitest.mvp.model.cache.IImageCache
 import com.example.dogapitest.mvp.model.entity.room.db.Database
-import com.example.dogapitest.mvp.model.entity.room.db.RoomCachedImage
+import com.example.dogapitest.mvp.model.entity.RoomImage
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -18,6 +18,7 @@ import java.security.MessageDigest
 class RoomImageCache(val database: Database, val dir: File) : IImageCache {
 
     private fun String.md5() = hash("MD5")
+
     private fun String.hash(algoritm: String) =
         MessageDigest.getInstance(algoritm).digest(toByteArray())
             .fold("", { str, it -> "%02x".format(it) })
@@ -43,7 +44,7 @@ class RoomImageCache(val database: Database, val dir: File) : IImageCache {
         } catch (e: Exception) {
             emitter.onError(e)
         }
-        database.imageDao.insert(RoomCachedImage(url,imageFile.path))
+        database.imageDao.insert(RoomImage(url,imageFile.path))
         emitter.onComplete()
 
     }.subscribeOn(Schedulers.io())

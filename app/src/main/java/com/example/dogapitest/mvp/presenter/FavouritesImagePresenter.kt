@@ -1,8 +1,8 @@
 package com.example.dogapitest.mvp.presenter
 
 
-import com.example.dogapitest.mvp.model.cache.IBreedsCache
-import com.example.dogapitest.mvp.model.entity.room.db.RoomCacheLike
+import com.example.dogapitest.mvp.model.cache.IRoomFavouritesCache
+import com.example.dogapitest.mvp.model.entity.RoomFavourites
 import com.example.dogapitest.mvp.presenter.list.IFavouritesImageListPresenter
 import com.example.dogapitest.mvp.view.FavouritesImageView
 import com.example.dogapitest.mvp.view.list.FavouritesImageItemView
@@ -23,7 +23,7 @@ class FavouritesImagePresenter(val breed: String) :
     lateinit var router: Router
 
     @Inject
-    lateinit var database: IBreedsCache
+    lateinit var database: IRoomFavouritesCache
 
     @Inject
     lateinit var rxProvider: IRxProvider
@@ -84,7 +84,7 @@ class FavouritesImagePresenter(val breed: String) :
             }).let { compositeDisposable.add(it) }
     }
 
-    fun convertData(list: List<RoomCacheLike>) {
+    fun convertData(list: List<RoomFavourites>) {
         imageListPresenter.imageData.clear()
         list.forEach {
             if (it.breedName == breed) imageListPresenter.imageData.add(it.url)

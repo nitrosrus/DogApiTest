@@ -2,7 +2,7 @@ package com.example.dogapitest.mvp.model.entity.room.dao
 
 
 import androidx.room.*
-import com.example.dogapitest.mvp.model.entity.room.db.RoomCacheLike
+import com.example.dogapitest.mvp.model.entity.RoomFavourites
 import io.reactivex.Single
 
 
@@ -10,13 +10,13 @@ import io.reactivex.Single
 interface BreedsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg entity: RoomCacheLike)
+    fun insert(vararg entity: RoomFavourites)
 
     @Delete
-    fun delete(url: RoomCacheLike)
+    fun delete(url: RoomFavourites)
 
-    @Query("SELECT * FROM RoomCacheLike")
-    fun getAllLike(): Single<List<RoomCacheLike>>
+    @Query("SELECT * FROM RoomFavourites")
+    fun getAllLike(): Single<List<RoomFavourites>>
 
 
 }

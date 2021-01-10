@@ -1,13 +1,15 @@
 package com.example.dogapitest.mvp.model.entity.room.db
 
 import androidx.room.RoomDatabase
+import com.example.dogapitest.mvp.model.entity.RoomFavourites
+import com.example.dogapitest.mvp.model.entity.RoomImage
 import com.example.dogapitest.mvp.model.entity.room.dao.BreedsDao
 import com.example.dogapitest.mvp.model.entity.room.dao.ImageDao
 
 @androidx.room.Database(
     entities = [
-        RoomCachedImage::class,
-        RoomCacheLike::class
+        RoomImage::class,
+        RoomFavourites::class
     ], version = 1
 )
 

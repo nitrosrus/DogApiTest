@@ -1,7 +1,7 @@
 package com.example.dogapitest.mvp.model.image
 
 
-import com.example.dogapitest.mvp.model.cache.image.IImageCache
+import com.example.dogapitest.mvp.model.cache.IImageCache
 
 interface IImageLoader<T> {
     val cache: IImageCache

@@ -1,11 +1,11 @@
-package com.example.dogapitest.mvp.model.entity.room.db
+package com.example.dogapitest.mvp.model.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
 @Entity
-data class RoomCachedImage(
+data class RoomImage(
     @PrimaryKey val url: String,
     val localPath: String
 
