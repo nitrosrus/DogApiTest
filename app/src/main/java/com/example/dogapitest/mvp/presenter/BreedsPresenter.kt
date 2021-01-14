@@ -1,7 +1,6 @@
 package com.example.dogapitest.mvp.presenter
 
 
-import com.example.dogapitest.mvp.model.breedsModel.BreedsList
 import com.example.dogapitest.mvp.model.source.ApiBreeds
 import com.example.dogapitest.mvp.presenter.list.IBreedsListPresenter
 import com.example.dogapitest.mvp.view.BreedsView
@@ -71,33 +70,31 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
         clearRx()
         apiBreeds.getBreeds()
             .subscribeOn(rxProvider.ioThread())
-            .observeOn(rxProvider.uiMainThread())
-            .subscribe({ breeds ->
-                convertData(breeds)
+            .observeOn(rxProvider.uiMainThread()).map {
+                convertData(it.message)
+            }
+            .subscribe({
+                updateData()
             }, {
                 Timber.e(it)
                 checkInternet()
             }).let { compositeDisposable.add(it) }
     }
 
-    private fun convertData(breeds: BreedsList) {
+    private fun convertData(message: Map<String, List<String>>) {
         breedsListPresenter.breedsData.clear()
-        breeds.message.forEach { entryMap ->
-            breedsListPresenter.breedsData[entryMap.key] = entryMap.value.size
+        message.map { (k, v) ->
+            breedsListPresenter.breedsData.put(k, v.size)
         }
-
-        updateData()
-
     }
 
     private fun updateData() = viewState.updateRVAdapter()
 
     fun awaitNetworkStatus() {
         clearRx()
-        compositeDisposable.add(
-            networkStatus.isOnlineObserver()
-                .subscribe { online -> if (online) loadData() }
-        )
+        networkStatus.isOnlineObserver()
+            .subscribe { online -> if (online) loadData() }.let { compositeDisposable.add(it) }
+
     }
 
     private fun itemClick(index: Int) {
