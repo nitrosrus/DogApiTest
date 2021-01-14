@@ -21,16 +21,16 @@ class BreedsPresenter() : MvpPresenter<BreedsView>() {
 
 
     @Inject
-     lateinit var router: Router
+    lateinit var router: Router
 
     @Inject
-     lateinit var apiBreeds: ApiBreeds
+    lateinit var apiBreeds: ApiBreeds
 
     @Inject
-     lateinit var rxProvider: IRxProvider
+    lateinit var rxProvider: IRxProvider
 
     @Inject
-     lateinit var networkStatus: NetworkStatus
+    lateinit var networkStatus: NetworkStatus
 
     val breedsListPresenter = BreedsListPresenter()
 
