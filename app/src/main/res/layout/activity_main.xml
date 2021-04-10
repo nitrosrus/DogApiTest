@@ -5,40 +5,41 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.MainActivity">
+    tools:context="nitrosrus.ru.dogapitest.ui.activity.MainActivity">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <RelativeLayout
         android:id="@+id/coordinator_top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/ivBackBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_back" />
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/top_bar"
-                android:layout_width="match_parent"
-                android:layout_height="56sp"
-                android:nestedScrollingEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:menu="@menu/top_app_menu"
-                app:navigationIcon="@drawable/ic_back"
-                app:title="@string/breeds" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/breeds" />
+    </RelativeLayout>
 
-        </com.google.android.material.appbar.AppBarLayout>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="6dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bab_nav"
         app:layout_constraintEnd_toEndOf="parent"
