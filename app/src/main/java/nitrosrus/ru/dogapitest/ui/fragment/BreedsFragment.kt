@@ -19,6 +19,7 @@ import nitrosrus.ru.dogapitest.ui.dialog.IShowAlertDialog
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import nitrosrus.ru.dogapitest.ui.adapter.decorators.NamingDecorator
 import javax.inject.Inject
 
 class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
@@ -78,6 +79,7 @@ class BreedsFragment : MvpAppCompatFragment(R.layout.breeds_fragment),
             .apply { breedsComponent.inject(this) }
         binding.rvBreeds.adapter = adapter
         dialog.clickListener = { presenter.awaitNetworkStatus() }
+        binding.rvBreeds.addItemDecoration(NamingDecorator(presenter.breedsListPresenter))
         initTextWatcher()
     }
 

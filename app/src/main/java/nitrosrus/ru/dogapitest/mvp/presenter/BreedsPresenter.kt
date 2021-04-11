@@ -15,10 +15,10 @@ import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 import timber.log.Timber
-import java.lang.IndexOutOfBoundsException
 import java.util.*
 import javax.inject.Inject
 import kotlin.Comparator
+import kotlin.IndexOutOfBoundsException
 
 @InjectViewState
 class BreedsPresenter : MvpPresenter<BreedsView>() {
@@ -84,11 +84,12 @@ class BreedsPresenter : MvpPresenter<BreedsView>() {
     }
 
     private fun itemClick(index: Int) {
-        if (breedsListPresenter.sortedBreedsData[index].count != 0) {
-            router.navigateTo(Screens.SubBreadsScreen(getBreedByIndex(index)))
-        } else {
-            router.navigateTo(Screens.ImageScreen(getBreedByIndex(index), null))
-        }
+
+            if (breedsListPresenter.sortedBreedsData[index].count != 0) {
+                router.navigateTo(Screens.SubBreadsScreen(getBreedByIndex(index)))
+            } else {
+                router.navigateTo(Screens.ImageScreen(getBreedByIndex(index), null))
+            }
 
     }
 
@@ -177,10 +178,7 @@ class BreedsPresenter : MvpPresenter<BreedsView>() {
         override fun getChar(index: Int): String? {
             try {
                 if (index - 1 > -1) {
-                    if (sortedBreedsData[index].breed.equals(
-                            sortedBreedsData[index].breed, ignoreCase = true
-                        )
-                    ) return null
+                    if (sortedBreedsData[index].breed[0].toLowerCase() == (sortedBreedsData[index-1].breed[0].toLowerCase())) return null
                 }
                 return sortedBreedsData[index].breed[0].toString()
             } catch (e: IndexOutOfBoundsException) {
@@ -210,7 +208,6 @@ class BreedsPresenter : MvpPresenter<BreedsView>() {
             }
             return filteredModelList
         }
-
 
     }
 

@@ -11,6 +11,7 @@ class NamingDecorator(val presenter: IBreedsListPresenter) : RecyclerView.ItemDe
         setColor(Color.BLACK)
         textSize = 40f
         typeface = Typeface.DEFAULT_BOLD
+
     }
 
     //вызывается до того как все элементы
@@ -42,12 +43,12 @@ class NamingDecorator(val presenter: IBreedsListPresenter) : RecyclerView.ItemDe
         val right = parent.width - parent.paddingRight
         val childCount = parent.childCount
         for (i in 0 until childCount) {
-
             val child = parent.getChildAt(i)
             val params = child.layoutParams as RecyclerView.LayoutParams
             // val top = child.bottom + params.bottomMargin
-            val left = parent.paddingLeft + 18
+            val left = parent.paddingLeft + 30
             val top = child.top + 30
+           // c.drawText("it", left.toFloat(), top.toFloat(), paint)
             presenter.getChar(parent.getChildViewHolder(child).adapterPosition)?.let { c.drawText(it, left.toFloat(), top.toFloat(), paint) }
 
         }

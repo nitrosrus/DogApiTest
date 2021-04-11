@@ -5,20 +5,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <net.cachapa.expandablelayout.ExpandableLayout
+    <LinearLayout
         android:id="@+id/expandFind"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/layout_bacground_corner_bottom"
-        app:el_expanded="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
             android:background="@drawable/find_corner">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -28,9 +27,9 @@
                 android:layout_marginHorizontal="6dp"
                 android:gravity="center"
                 android:hint="Поиск" />
-        </RelativeLayout>
+        </LinearLayout>
 
-    </net.cachapa.expandablelayout.ExpandableLayout>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_breeds"
