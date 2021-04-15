@@ -23,7 +23,7 @@ class NamingDecorator(val presenter: IBreedsListPresenter) : RecyclerView.ItemDe
             val child = parent.getChildAt(i)
             val left =  16
             val top = child.top + 25
-            presenter.getChar(parent.getChildViewHolder(child).adapterPosition)?.let {
+            presenter.getChar(parent.getChildViewHolder(child).absoluteAdapterPosition)?.let {
                 c.drawText(it, left.toFloat(), top.toFloat(), paint) }
         }
     }
