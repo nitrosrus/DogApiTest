@@ -186,7 +186,6 @@ class BreedsPresenter : MvpPresenter<BreedsView>() {
             }
         }
 
-
         fun textChanged(query: String) {
             var filteredModelList: List<Breeds>? = filter(query)
             filteredModelList?.let {

@@ -1,8 +1,6 @@
 package nitrosrus.ru.dogapitest.ui.activity
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import nitrosrus.ru.dogapitest.databinding.ActivityMainBinding
 import nitrosrus.ru.dogapitest.App
 import nitrosrus.ru.dogapitest.BackButtonListener
@@ -14,8 +12,6 @@ import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import nitrosrus.ru.dogapitest.R
-import nitrosrus.ru.dogapitest.mvp.presenter.BreedsPresenter
-import nitrosrus.ru.dogapitest.mvp.presenter.FindTextListener
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
